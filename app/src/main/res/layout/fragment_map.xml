@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </fragment>
+    </com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout>
+
+    <ImageButton
+        android:id="@+id/layer_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/default_margin_half"
+        android:background="@drawable/bg_btn_map_control"
+        android:minHeight="@dimen/min_tap_size"
+        android:minWidth="@dimen/min_tap_size"
+        android:src="@drawable/ic_map_control_satellite"
+        />
+
+    <ImageButton
+        android:id="@+id/current_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/layer_switch"
+        android:layout_alignStart="@+id/layer_switch"
+        android:layout_below="@+id/layer_switch"
+        android:background="@drawable/bg_btn_map_control"
+        android:minHeight="@dimen/min_tap_size"
+        android:minWidth="@dimen/min_tap_size"
+        android:src="@drawable/ic_current_location"/>
+
+    <TextView
+        android:id="@+id/weather_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/default_margin_half"
+        android:minHeight="@dimen/min_tap_size"
+        android:background="@color/wallet_dim_foreground_disabled_holo_dark"
+        android:gravity="center"
+        android:text="{COUNT}"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="@color/body_text_1_inverse"
+        android:layout_alignParentBottom="true"/>
+
+    <FrameLayout
+        android:id="@+id/weather_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white">
+
+        <include layout="@layout/list_item_forecast"/>
+
+    </FrameLayout>
+
+</RelativeLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="@dimen/camera_view_cluster"
+        android:layout_height="@dimen/camera_view_cluster"
+        android:padding="8dp"
+        android:src="@drawable/map_cluster"/>
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="@dimen/camera_view_cluster"
+        android:layout_height="@dimen/camera_view_cluster"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:padding="8dp"
+        android:layout_alignLeft="@+id/image"
+        android:layout_alignRight="@+id/image"
+        android:gravity="center"
+        android:text="Recently Sold"
+        android:textColor="@color/body_text_1_inverse"/>
+
+</RelativeLayout>

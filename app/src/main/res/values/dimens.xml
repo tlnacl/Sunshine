@@ -1,0 +1,16 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="default_margin_half">8dp</dimen>
+    <dimen name="min_tap_size">48dp</dimen>
+
+    <dimen name="btn_radius">4dp</dimen>
+
+    <dimen name="camera_view_big_font">12sp</dimen>
+    <dimen name="camera_view_normal_font">14sp</dimen>
+ß
+    <dimen name="camera_view_cluster">160dp</dimen>
+
+    <dimen name="sliding_menu_behind_offset">10dp</dimen>
+
+</resources>
