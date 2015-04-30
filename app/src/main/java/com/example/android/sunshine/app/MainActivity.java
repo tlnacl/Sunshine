@@ -17,19 +17,24 @@ package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.widget.DrawerLayout;
 
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 
-public class MainActivity extends BaseActivity implements ForecastFragment.Callback {
+public class MainActivity extends BaseActivity implements ForecastFragment.Callback,
+        NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final int SHOW_IN_MAP = 0;
+    private static final int MY_WEATHER = 1;
 
     private boolean mTwoPane;
 
     private int cityId = -1;
+
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,30 +66,31 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
 
         SunshineSyncAdapter.initializeSyncAdapter(this);
 
+        //drawer
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = getTitle();
+
+        // Set up the drawer.
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
+
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
+//            // Only show items in the action bar relevant to this screen
+//            // if the drawer is not showing. Otherwise, let the drawer
+//            // decide what to show in the action bar.
+//            getMenuInflater().inflate(R.menu.main, menu);
+//            return true;
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        }else if(id == R.id.action_map_weather){
-            startActivity(new Intent(this,MapActivity.class));
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     @Override
@@ -107,5 +113,18 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
                     .putExtra(DetailActivity.DATE_KEY, date);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onNavigationDrawerItemSelected(int position) {
+        switch (position){
+            case SHOW_IN_MAP:
+
+                break;
+            case MY_WEATHER:
+
+                break;
+        }
+
     }
 }

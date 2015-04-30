@@ -40,7 +40,10 @@
         <activity
             android:name="com.example.android.sunshine.app.MainActivity"
             android:theme="@style/ForecastTheme" >
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:label="@string/title_activity_detail"
@@ -57,10 +60,7 @@
         <activity
             android:label="@string/title_activity_map_weather"
             android:name="com.example.android.sunshine.app.MapActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:label="@string/title_activity_camera"

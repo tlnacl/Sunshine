@@ -12,5 +12,6 @@
     <dimen name="camera_view_cluster">160dp</dimen>
 
     <dimen name="sliding_menu_behind_offset">10dp</dimen>
+    <dimen name="navigation_drawer_width">240dp</dimen>
 
 </resources>

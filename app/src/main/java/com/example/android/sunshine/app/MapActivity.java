@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -233,34 +231,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
 
     }
 
-//    @Subscribe
-//    public void onMapSearchFinished(MapSearchEvent event){
-//        onSearchResult(event.result);
-//    }
-
-//    public class ShowWeatherDataOnMapTask extends AsyncTask<LatLng,Void,List<WeatherUI>> {
-//        private final String LOG_TAG = ShowWeatherDataOnMapTask.class.getSimpleName();
-//
-//        @Override
-//        protected void onPreExecute() {
-//            working = true;
-//        }
-//
-//        @Override
-//        protected List<WeatherUI> doInBackground(LatLng... latLngs) {
-//            List<WeatherUI> weathers = WeatherData.getWeatherDataByLatLng(latLngs[0]);
-//            return  weathers;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<WeatherUI> weathers) {
-//            onSearchResult(weathers);
-//            working = false;
-//        }
-//    }
-
-
-
     public void onSearchResult(JsonObject findResponse) {
         if(findResponse!=null) {
             processWeatherUI(RetrofitWeatherData.parseWeatherData(findResponse));
@@ -372,29 +342,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.map, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
-        } else if (id == R.id.action_main) {
-            startActivity(new Intent(this, MainActivity.class));
-        } else if (id == R.id.action_camera) {
-            startActivity(new Intent(this, CameraActivity.class));
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     @Override

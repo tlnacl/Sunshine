@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.view.MenuItem;
 
 import com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout;
 
@@ -104,15 +103,5 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
     @Override
     public boolean canSwipeRefreshChildScrollUp() {
         return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (item.getItemId() == android.R.id.home) {
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
