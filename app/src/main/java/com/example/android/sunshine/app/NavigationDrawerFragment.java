@@ -3,6 +3,8 @@ package com.example.android.sunshine.app;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -18,12 +20,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.sql.Array;
+import java.util.List;
 
 /**
  * Created by tomtang on 29/04/15.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment implements NavigationDrawerFragment.NavigationDrawerCallbacks{
 
     /**
      * Remember the position of the selected item.
@@ -93,16 +100,7 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_activity_map_weather),
-                        getString(R.string.title_my_weather),
-                        getString(R.string.title_activity_camera),
-                        getString(R.string.title_activity_settings),
-                }));
+        mDrawerListView.setAdapter(new MenuAdapter(getActivity(),android.R.id.text1));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -233,7 +231,7 @@ public class NavigationDrawerFragment extends Fragment {
         // showGlobalContextActionBar, which controls the top-left area of the action bar.
         if (mDrawerLayout != null && isDrawerOpen()) {
             inflater.inflate(R.menu.drawer_open, menu);
-            showGlobalContextActionBar();
+//            showGlobalContextActionBar();
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -251,12 +249,12 @@ public class NavigationDrawerFragment extends Fragment {
      * Per the navigation drawer design guidelines, updates the action bar to show the global app
      * 'context', rather than just what's in the current screen.
      */
-    private void showGlobalContextActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
-    }
+//    private void showGlobalContextActionBar() {
+//        ActionBar actionBar = getActionBar();
+//        actionBar.setDisplayShowTitleEnabled(true);
+//        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//        actionBar.setTitle(R.string.app_name);
+//    }
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
@@ -270,5 +268,44 @@ public class NavigationDrawerFragment extends Fragment {
          * Called when an item in the navigation drawer is selected.
          */
         void onNavigationDrawerItemSelected(int position);
+    }
+
+    enum MenuList {
+        MY_WEATHER(R.string.title_my_weather, MainActivity.class),
+        MAP_VIEW(R.string.title_activity_map_weather,MainActivity.class),
+        CAMERA_VIEW(R.string.title_activity_camera,CameraActivity.class),
+        SETTING(R.string.title_activity_settings,CameraActivity.class);
+
+
+        private Class<?> mActivity;
+        private int mName;
+
+        MenuList(int name, Class<?> activity) {
+            mName = name;
+            mActivity = activity;
+        }
+
+        public Class<?> getActivityClass(){
+            return mActivity;
+        }
+
+        public int getName() {
+            return mName;
+        }
+    }
+
+    private class MenuAdapter extends ArrayAdapter<MenuList> {
+//        private Context mContext;
+        public MenuAdapter(Context context, int resource) {
+            super(context, resource, MenuList.values());
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final TextView text1 = (TextView) super.getView(position, convertView, parent);
+            final MenuList menuList = getItem(position);
+            text1.setText(menuList.getName());
+            return text1;
+        }
     }
 }

@@ -22,8 +22,7 @@ import android.support.v4.widget.DrawerLayout;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 
-public class MainActivity extends BaseActivity implements ForecastFragment.Callback,
-        NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class MainActivity extends BaseActivity implements ForecastFragment.Callback {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int SHOW_IN_MAP = 0;
@@ -34,7 +33,6 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
     private int cityId = -1;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,6 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
         //drawer
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -115,16 +112,4 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
         }
     }
 
-    @Override
-    public void onNavigationDrawerItemSelected(int position) {
-        switch (position){
-            case SHOW_IN_MAP:
-
-                break;
-            case MY_WEATHER:
-
-                break;
-        }
-
-    }
 }
