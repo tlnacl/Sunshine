@@ -1,7 +1,5 @@
 package com.example.android.sunshine.app;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -12,25 +10,21 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import java.sql.Array;
-import java.util.List;
 
 /**
  * Created by tomtang on 29/04/15.
  */
-public class NavigationDrawerFragment extends Fragment implements NavigationDrawerFragment.NavigationDrawerCallbacks{
+public class NavigationDrawerFragment extends Fragment{
 
     /**
      * Remember the position of the selected item.
@@ -43,10 +37,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
-    /**
-     * A pointer to the current callbacks instance (the Activity).
-     */
-    private NavigationDrawerCallbacks mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -98,9 +88,12 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
+                final MenuList menuList = (MenuList) parent.getItemAtPosition(position);
+                Intent intent = new Intent(getActivity(),menuList.getActivityClass());
+                startActivity(intent);
             }
         });
-        mDrawerListView.setAdapter(new MenuAdapter(getActivity(),android.R.id.text1));
+        mDrawerListView.setAdapter(new MenuAdapter(getActivity(),R.layout.item_menu));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -191,25 +184,6 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
-        }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
     }
 
     @Override
@@ -225,16 +199,16 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // If the drawer is open, show the global app actions in the action bar. See also
-        // showGlobalContextActionBar, which controls the top-left area of the action bar.
-        if (mDrawerLayout != null && isDrawerOpen()) {
-            inflater.inflate(R.menu.drawer_open, menu);
-//            showGlobalContextActionBar();
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        // If the drawer is open, show the global app actions in the action bar. See also
+//        // showGlobalContextActionBar, which controls the top-left area of the action bar.
+//        if (mDrawerLayout != null && isDrawerOpen()) {
+//            inflater.inflate(R.menu.drawer_open, menu);
+////            showGlobalContextActionBar();
+//        }
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -257,24 +231,14 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 //    }
 
     private ActionBar getActionBar() {
-        return getActivity().getActionBar();
-    }
-
-    /**
-     * Callbacks interface that all activities using this fragment must implement.
-     */
-    public static interface NavigationDrawerCallbacks {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
-        void onNavigationDrawerItemSelected(int position);
+        return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
     enum MenuList {
         MY_WEATHER(R.string.title_my_weather, MainActivity.class),
-        MAP_VIEW(R.string.title_activity_map_weather,MainActivity.class),
+        MAP_VIEW(R.string.title_activity_map_weather,WeatherMapActivity.class),
         CAMERA_VIEW(R.string.title_activity_camera,CameraActivity.class),
-        SETTING(R.string.title_activity_settings,CameraActivity.class);
+        SETTING(R.string.title_activity_settings,SettingsActivity.class);
 
 
         private Class<?> mActivity;

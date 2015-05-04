@@ -12,7 +12,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.sunshine.app.network.RetrofitHelper;
+import com.example.android.sunshine.app.events.MapSearchEvent;
+import com.example.android.sunshine.app.network.OpenWeatherClient;
 import com.example.android.sunshine.app.network.RetrofitWeatherData;
 import com.example.android.sunshine.app.ui.WeatherUI;
 import com.example.android.sunshine.app.utils.WeatherClusterRenderer;
@@ -20,7 +21,7 @@ import com.example.android.sunshine.app.utils.helper.MarkerHelper;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,21 +32,16 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
+import com.squareup.otto.Subscribe;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 
 /**
  * Created by tlnacl on 15/12/14.
  */
-public class MapActivity extends BaseActivity implements View.OnClickListener{
+public class WeatherMapActivity extends BaseActivity implements View.OnClickListener{
 
     public static final float DO_NOT_CHANGE_ZOOM = -1f;
     private static final float START_ZOOM_LEVEL = 11f;
@@ -54,7 +50,7 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
 
     private ClusterManager<WeatherUI> mClusterManager;
 
-    private final String TAG = MapActivity.class.getSimpleName();
+    private final String TAG = WeatherMapActivity.class.getSimpleName();
     private GoogleMap mMap;
     private MarkerHelper<WeatherUI> mMarkerHelper;
 
@@ -107,7 +103,8 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
         if (mMap != null) {
             return;
         }
-        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+        mMap = ((MapFragment) getFragmentManager().
+                findFragmentById(R.id.map)).getMap();
         if (mMap != null) {
             startMap();
         }
@@ -166,12 +163,12 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
                 //The smallest bounding box that includes the visible region defined in this class.
                 LatLngBounds bounds = visibleRegion.latLngBounds;
 
-                Log.i(TAG,"bounds.northeast:"+bounds.northeast+"  bounds.southwest:"+bounds.southwest);
+                Log.i(TAG, "bounds.northeast:" + bounds.northeast + "  bounds.southwest:" + bounds.southwest);
 
                 final LatLng latLng = mMap.getCameraPosition().target;
 
                 //if task is running only execute recent one
-                if(loading == true) {
+                if (loading == true) {
                     cameraChanged = true;
                     lastLatLng = latLng;
                     return;
@@ -186,13 +183,6 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
     public void doMapSearch(LatLng latLng) {
         onRefreshingStateChanged(true);
 
-        Map<String,String> options = new HashMap<>();
-        options.put("mode", "json");
-        options.put("units", "metric");
-        options.put("cnt", "10");
-        options.put("lat", String.valueOf(latLng.latitude));
-        options.put("lon", String.valueOf(latLng.longitude));
-
         /**
          * an algorithm to prevent fast drag
          *
@@ -202,23 +192,17 @@ public class MapActivity extends BaseActivity implements View.OnClickListener{
          */
         loading = true;
 
-        RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<JsonObject>() {
-            @Override
-            public void success(JsonObject jsonObject, Response response) {
-                Log.i(TAG,jsonObject.toString());
-                onSearchResult(jsonObject);
-                onRefreshingStateChanged(false);
-                checkCameraChange();
-            }
+        OpenWeatherClient openWeatherClient = new OpenWeatherClient();
+        openWeatherClient.doMapSearch(latLng);
+    }
 
-            @Override
-            public void failure(RetrofitError error) {
-                Log.i(TAG,"###########robospice exception"+error.getMessage());
-//            spiceException.printStackTrace();
-                onRefreshingStateChanged(false);
-                checkCameraChange();
-            }
-        });
+    @Subscribe
+    public void onMapSearchReturn(MapSearchEvent event){
+        if(event.result != null) {
+            onSearchResult(event.result);
+        }
+        onRefreshingStateChanged(false);
+        checkCameraChange();
     }
 
     private void checkCameraChange() {

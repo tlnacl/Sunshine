@@ -10,6 +10,6 @@ public class RetrofitErrorHandler implements ErrorHandler {
     @Override
     public Throwable handleError(RetrofitError retrofitError) {
         retrofitError.printStackTrace();
-        return null;
+        return retrofitError;
     }
 }

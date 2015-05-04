@@ -1,17 +1,22 @@
 package com.example.android.sunshine.app;
 
-import android.app.ActionBar;
+
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
 
 import com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout;
+import com.example.android.sunshine.app.utils.BusProvider;
+import com.squareup.otto.Bus;
 
 /**
  * Created by tlnacl on 30/12/14.
  */
 public abstract class BaseActivity extends ActionBarActivity implements MultiSwipeRefreshLayout.CanChildScrollUpCallback {
     private ActionBar mActionBar;
+
 
     // SwipeRefreshLayout allows the user to swipe the screen down to trigger a manual refresh
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -21,8 +26,10 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mActionBar = getActionBar();
-        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar = getSupportActionBar();
+//        if (mActionBar != null) {
+//            mActionBar.setDisplayHomeAsUpEnabled(true);
+//        }
     }
 
     @Override
@@ -103,5 +110,29 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
     @Override
     public boolean canSwipeRefreshChildScrollUp() {
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    protected Bus getBus(){
+        return  BusProvider.getInstance();
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+
+        // Register ourselves so that we can provide the initial value.
+        getBus().register(this);
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+
+        // Always unregister when an object no longer should be on the bus.
+        getBus().unregister(this);
     }
 }

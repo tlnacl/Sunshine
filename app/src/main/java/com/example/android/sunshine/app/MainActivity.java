@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
             // adding or replacing the detail fragment using a
             // fragment transaction.
             if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
+                getFragmentManager().beginTransaction()
                         .replace(R.id.weather_detail_container, new DetailFragment())
                         .commit();
             }
@@ -57,7 +57,7 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
 
         cityId = getIntent().getIntExtra("cityId",-1);
 
-        ForecastFragment forecastFragment =  ((ForecastFragment)getSupportFragmentManager()
+        ForecastFragment forecastFragment =  ((ForecastFragment)getFragmentManager()
                 .findFragmentById(R.id.fragment_forecast));
         forecastFragment.setUseTodayLayout(!mTwoPane);
         forecastFragment.setCityId(cityId);
@@ -75,21 +75,6 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
 
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-//            // Only show items in the action bar relevant to this screen
-//            // if the drawer is not showing. Otherwise, let the drawer
-//            // decide what to show in the action bar.
-//            getMenuInflater().inflate(R.menu.main, menu);
-//            return true;
-//        }
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-
-
     @Override
     public void onItemSelected(String date) {
         if (mTwoPane) {
@@ -102,7 +87,7 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(args);
 
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .replace(R.id.weather_detail_container, fragment)
                     .commit();
         } else {

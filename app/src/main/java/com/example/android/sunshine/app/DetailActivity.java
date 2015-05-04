@@ -38,7 +38,7 @@ public class DetailActivity extends BaseActivity {
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);
 
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.weather_detail_container, fragment)
                     .commit();
         }

@@ -34,10 +34,10 @@ public interface OpenWeatherServer {
     @GET("/weather")
     void currentWeatherByCity(@Query("id") int cityId, Callback<JsonObject> callback);
 
-    @GET("/find")//http://api.openweathermap.org/data/2.5/forecast/daily?id=2193733&mode=json&units=metric&cnt=14
+    @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
     JsonObject weatherMapSearch(@QueryMap Map<String, String> options);
 
-    @GET("/find")//http://api.openweathermap.org/data/2.5/forecast/daily?id=2193733&mode=json&units=metric&cnt=14
+    @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
     void weatherMapSearch(@QueryMap Map<String, String> options, Callback<JsonObject> callback);
 
 }
