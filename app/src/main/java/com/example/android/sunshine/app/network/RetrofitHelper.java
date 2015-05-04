@@ -18,33 +18,29 @@ import retrofit.converter.GsonConverter;
  * Created by tlnacl on 15/01/15.
  */
 public final class RetrofitHelper {
-    private static RestAdapter restAdapter;
+    private static OpenWeatherServer sOpenWeatherServer;
     private static final String API_URL = BuildConfig.API_ENDPOINT;
 
     public RetrofitHelper() {
     }
 
-    public static RestAdapter getRestAdapter(){
-        //set timeout for error test
-        OkHttpClient client = new OkHttpClient();
-        client.setConnectTimeout(10, TimeUnit.SECONDS);
-        client.setReadTimeout(10, TimeUnit.SECONDS);
-        client.interceptors().add(statusInterceptor);
-//        client.setRetryOnConnectionFailure(true);
-        if(restAdapter==null){
+    public static OpenWeatherServer getServerApi() {
+        if (sOpenWeatherServer == null) {
+            OkHttpClient client = new OkHttpClient();
+            client.setConnectTimeout(10, TimeUnit.SECONDS);
+            client.setReadTimeout(10, TimeUnit.SECONDS);
+            client.interceptors().add(statusInterceptor);
+            client.setRetryOnConnectionFailure(true);
             Gson gson = new GsonBuilder().setDateFormat("ddMMyyyy HH:mm:ss").create();
-            restAdapter = new RestAdapter.Builder().setEndpoint(API_URL)
+            RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL)
                     .setErrorHandler(new RetrofitErrorHandler())
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setConverter(new GsonConverter(gson))
                     .setClient(new OkClient(client))
                     .build();
+            sOpenWeatherServer = restAdapter.create(OpenWeatherServer.class);
         }
-        return  restAdapter;
-    }
-
-    public static OpenWeatherServer getServerApi(){
-        return getRestAdapter().create(OpenWeatherServer.class);
+        return sOpenWeatherServer;
     }
 
     private static Interceptor statusInterceptor = new Interceptor() {
@@ -54,10 +50,10 @@ public final class RetrofitHelper {
             com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
             if (originalResponse.code() != HttpURLConnection.HTTP_OK) {
                 //TODO retry
-//                chain.request().
+//                chain.request()
             }
-                return originalResponse;
-            }
-        };
+            return originalResponse;
+        }
+    };
 
 }

@@ -89,6 +89,12 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setSwipeRefreshEnabled(false);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();

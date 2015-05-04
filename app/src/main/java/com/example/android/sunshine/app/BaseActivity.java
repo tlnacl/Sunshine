@@ -27,9 +27,9 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
         super.onCreate(savedInstanceState);
 
         mActionBar = getSupportActionBar();
-//        if (mActionBar != null) {
-//            mActionBar.setDisplayHomeAsUpEnabled(true);
-//        }
+        if (mActionBar != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
