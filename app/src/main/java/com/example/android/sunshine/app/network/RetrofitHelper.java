@@ -1,11 +1,14 @@
 package com.example.android.sunshine.app.network;
 
 import com.example.android.sunshine.app.BuildConfig;
+import com.example.android.sunshine.app.CoreApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
@@ -26,10 +29,16 @@ public final class RetrofitHelper {
 
     public static OpenWeatherServer getServerApi() {
         if (sOpenWeatherServer == null) {
+            int cacheSize = 10 * 1024 * 1024; // 10 MiB
+            File cacheDirectory = new File(CoreApplication.getContext().getCacheDir().getAbsolutePath(), "HttpCache");
+            Cache cache = new Cache(cacheDirectory, cacheSize);
+
+
             OkHttpClient client = new OkHttpClient();
             client.setConnectTimeout(10, TimeUnit.SECONDS);
             client.setReadTimeout(10, TimeUnit.SECONDS);
-            client.interceptors().add(statusInterceptor);
+            client.setCache(cache);
+            client.interceptors().add(retryInterceptor);
             client.setRetryOnConnectionFailure(true);
             Gson gson = new GsonBuilder().setDateFormat("ddMMyyyy HH:mm:ss").create();
             RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL)
@@ -43,7 +52,8 @@ public final class RetrofitHelper {
         return sOpenWeatherServer;
     }
 
-    private static Interceptor statusInterceptor = new Interceptor() {
+
+    private static Interceptor retryInterceptor = new Interceptor() {
         @Override
         public com.squareup.okhttp.Response intercept(Interceptor.Chain chain) throws IOException {
 

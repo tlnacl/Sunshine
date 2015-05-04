@@ -23,8 +23,8 @@ public class OpenWeatherClient {
         options.put("mode", "json");
         options.put("units", "metric");
         options.put("cnt", "10");
-        options.put("lat", String.valueOf(latLng.latitude));
-        options.put("lon", String.valueOf(latLng.longitude));
+        options.put("lat", String.format("%.4f",latLng.latitude));
+        options.put("lon", String.format("%.4f", latLng.longitude));
 
         RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<JsonObject>() {
             @Override

@@ -7,11 +7,11 @@ import android.os.StrictMode;
 /**
  * Created by tlnacl on 16/12/14.
  */
-public class MainApplication extends Application {
-    private static MainApplication instance;
+public class CoreApplication extends Application {
+    private static CoreApplication instance;
     private static final String TAG = "APP";
 
-    public MainApplication(){
+    public CoreApplication(){
         instance = this;
     }
 
@@ -25,7 +25,7 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectAll()
+                .detectNetwork()
                 .penaltyLog()
                 .penaltyDialog()
                 .build());

@@ -1,12 +1,7 @@
 package com.example.android.sunshine.app.network;
 
-import android.util.Log;
-
-import com.example.android.sunshine.app.MainApplication;
 import com.example.android.sunshine.app.ui.WeatherUI;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 //import org.json.JSONArray;
