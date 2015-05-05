@@ -12,7 +12,7 @@ import retrofit.http.QueryMap;
 /**
  * Created by tlnacl on 15/01/15.
  */
-public interface OpenWeatherServer {
+public interface OpenWeatherService {
     //http://api.openweathermap.org/data/2.5/weather?id=2172797
 //    final String WEATHER_CURRENT_BY_CITYID = WEATHER_BASE_URL+"weather";
 

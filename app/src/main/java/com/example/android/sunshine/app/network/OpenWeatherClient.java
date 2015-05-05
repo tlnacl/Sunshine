@@ -16,7 +16,7 @@ import retrofit.client.Response;
 /**
  * Created by tomtang on 4/05/15.
  */
-public class OpenWeatherClient {
+public final class OpenWeatherClient {
 
     public void doMapSearch(LatLng latLng){
         Map<String,String> options = new HashMap<>();
@@ -34,6 +34,7 @@ public class OpenWeatherClient {
 
             @Override
             public void failure(RetrofitError error) {
+                //TODO post(new ApiErrorEvent(error));
                 BusProvider.getInstance().post(produceMapSearchEvent(null));
             }
         });

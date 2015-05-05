@@ -18,14 +18,14 @@ import retrofit.converter.GsonConverter;
  * Created by tlnacl on 15/01/15.
  */
 public final class RetrofitHelper {
-    private static OpenWeatherServer sOpenWeatherServer;
+    private static OpenWeatherService sOpenWeatherService;
     private static final String API_URL = BuildConfig.API_ENDPOINT;
 
     public RetrofitHelper() {
     }
 
-    public static OpenWeatherServer getServerApi() {
-        if (sOpenWeatherServer == null) {
+    public static OpenWeatherService getServerApi() {
+        if (sOpenWeatherService == null) {
             OkHttpClient client = new OkHttpClient();
             client.setConnectTimeout(10, TimeUnit.SECONDS);
             client.setReadTimeout(10, TimeUnit.SECONDS);
@@ -38,9 +38,9 @@ public final class RetrofitHelper {
                     .setConverter(new GsonConverter(gson))
                     .setClient(new OkClient(client))
                     .build();
-            sOpenWeatherServer = restAdapter.create(OpenWeatherServer.class);
+            sOpenWeatherService = restAdapter.create(OpenWeatherService.class);
         }
-        return sOpenWeatherServer;
+        return sOpenWeatherService;
     }
 
     private static Interceptor statusInterceptor = new Interceptor() {
@@ -49,7 +49,7 @@ public final class RetrofitHelper {
 
             com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
             if (originalResponse.code() != HttpURLConnection.HTTP_OK) {
-                //TODO retry
+                //TODO retry After parsing the result, just call chain.proceed() again with the same, updated, or completely new request.
 //                chain.request()
             }
             return originalResponse;
