@@ -2,6 +2,7 @@ package com.example.android.sunshine.app.network;
 
 import com.google.gson.JsonObject;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -35,9 +36,9 @@ public interface OpenWeatherService {
     void currentWeatherByCity(@Query("id") int cityId, Callback<JsonObject> callback);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    JsonObject weatherMapSearch(@QueryMap Map<String, String> options);
+    List<OpenWeatherClient.CurrentWeatherDataEnvelope> weatherMapSearch(@QueryMap Map<String, String> options);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<JsonObject> callback);
+    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<List<OpenWeatherClient.CurrentWeatherDataEnvelope>> callback);
 
 }

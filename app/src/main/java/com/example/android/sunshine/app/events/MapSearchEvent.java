@@ -1,12 +1,14 @@
 package com.example.android.sunshine.app.events;
 
-import com.google.gson.JsonObject;
+import com.example.android.sunshine.app.models.WeatherForecast;
+
+import java.util.List;
 
 /**
  * Created by tlnacl on 12/01/15.
  */
 public class MapSearchEvent {
-    public JsonObject result;
+    public List<WeatherForecast> result;
 
-    public MapSearchEvent(JsonObject weatherData){ this.result = weatherData;}
+    public MapSearchEvent(List<WeatherForecast> weatherData){ this.result = weatherData;}
 }

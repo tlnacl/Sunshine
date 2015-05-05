@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.sunshine.app.events.MapSearchEvent;
+import com.example.android.sunshine.app.models.WeatherForecast;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
-import com.example.android.sunshine.app.network.RetrofitWeatherData;
 import com.example.android.sunshine.app.ui.WeatherUI;
 import com.example.android.sunshine.app.utils.WeatherClusterRenderer;
 import com.example.android.sunshine.app.utils.helper.MarkerHelper;
@@ -27,13 +27,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.VisibleRegion;
-import com.google.gson.JsonObject;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -221,9 +221,13 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
 
     }
 
-    public void onSearchResult(JsonObject findResponse) {
+    public void onSearchResult(List<WeatherForecast> findResponse) {
         if(findResponse!=null) {
-            processWeatherUI(RetrofitWeatherData.parseWeatherData(findResponse));
+            List<WeatherUI> weatherUIs = new ArrayList<>();
+            for(WeatherForecast forecast : findResponse){
+                weatherUIs.add(new WeatherUI(forecast));
+            }
+            processWeatherUI(weatherUIs);
         } else {
             mMarkerHelper.clear();
             mClusterManager.clearItems();
