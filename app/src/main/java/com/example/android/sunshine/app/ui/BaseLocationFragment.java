@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.example.android.sunshine.app.R;
+import com.example.android.sunshine.app.utils.LocationUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;

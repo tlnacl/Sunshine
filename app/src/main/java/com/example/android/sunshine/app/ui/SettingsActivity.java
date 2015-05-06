@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 

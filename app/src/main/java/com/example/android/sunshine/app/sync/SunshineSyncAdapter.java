@@ -23,9 +23,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import com.example.android.sunshine.app.MainActivity;
+import com.example.android.sunshine.app.ui.MainActivity;
 import com.example.android.sunshine.app.R;
-import com.example.android.sunshine.app.Utility;
+import com.example.android.sunshine.app.utils.Utility;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
@@ -248,6 +248,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             locationId = ContentUris.parseId(insertedUri);
         }
 
+        locationCursor.close();
         // Wait, that worked?  Yes!
         return locationId;
     }

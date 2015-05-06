@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.content.Intent;
 import android.location.Location;
@@ -12,10 +12,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.events.MapSearchEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
-import com.example.android.sunshine.app.ui.WeatherUI;
+import com.example.android.sunshine.app.utils.Utility;
 import com.example.android.sunshine.app.utils.WeatherClusterRenderer;
 import com.example.android.sunshine.app.utils.helper.MarkerHelper;
 import com.google.android.gms.maps.CameraUpdate;

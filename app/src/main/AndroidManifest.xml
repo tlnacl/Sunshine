@@ -39,7 +39,7 @@
             android:value="AIzaSyCMMpnQzRDfaZaIGVt7krXqX_pKVmCRnVY"/>
 
         <activity
-            android:name="com.example.android.sunshine.app.MainActivity"
+            android:name=".ui.MainActivity"
             android:theme="@style/ForecastTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,24 +48,24 @@
         </activity>
         <activity
             android:label="@string/title_activity_detail"
-            android:name="com.example.android.sunshine.app.DetailActivity" >
+            android:name=".ui.DetailActivity" >
         </activity>
         <activity
             android:label="@string/title_activity_settings"
-            android:name="com.example.android.sunshine.app.SettingsActivity"
-            android:parentActivityName="com.example.android.sunshine.app.MainActivity" >
+            android:name=".ui.SettingsActivity"
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.android.sunshine.app.MainActivity" />
+                android:value=".ui.MainActivity" />
         </activity>
         <activity
             android:label="@string/title_activity_map_weather"
-            android:name=".WeatherMapActivity"
-            android:parentActivityName="com.example.android.sunshine.app.MainActivity" >
+            android:name=".ui.WeatherMapActivity"
+            android:parentActivityName=".ui.MainActivity" >
         </activity>
         <activity
             android:label="@string/title_activity_camera"
-            android:name="com.example.android.sunshine.app.CameraActivity" >
+            android:name=".ui.CameraActivity" >
         </activity>
         <provider
             android:authorities="@string/content_authority"

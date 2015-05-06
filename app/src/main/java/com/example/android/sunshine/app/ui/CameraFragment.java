@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.ui.BaseArFragment;
 import com.example.android.sunshine.app.ui.WeatherUI;
 import com.example.android.sunshine.app.ui.WeatherViewObject;

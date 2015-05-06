@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 

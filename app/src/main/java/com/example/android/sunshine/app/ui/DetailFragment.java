@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -34,8 +34,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
+import com.example.android.sunshine.app.utils.Utility;
 
 /**
  * A placeholder fragment containing a simple view.

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.app.Fragment;
 import android.app.LoaderManager;
@@ -30,10 +30,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+import com.example.android.sunshine.app.utils.Utility;
 
 import java.util.Date;
 

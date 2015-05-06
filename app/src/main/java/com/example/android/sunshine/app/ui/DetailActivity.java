@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.os.Bundle;
+
+import com.example.android.sunshine.app.R;
 
 public class DetailActivity extends BaseActivity {
 

@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.WeatherContract;
 
 import java.text.DateFormat;

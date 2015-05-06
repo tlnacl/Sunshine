@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 
+import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout;
 import com.example.android.sunshine.app.utils.BusProvider;
 import com.squareup.otto.Bus;

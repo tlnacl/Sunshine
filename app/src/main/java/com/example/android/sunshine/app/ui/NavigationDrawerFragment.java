@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app;
+package com.example.android.sunshine.app.ui;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -20,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.android.sunshine.app.R;
 
 /**
  * Created by tomtang on 29/04/15.

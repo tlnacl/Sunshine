@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app.ui;
+package com.example.android.sunshine.app.utils;
 
 import android.content.Context;
 import android.location.Location;
