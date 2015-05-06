@@ -269,6 +269,7 @@ public class Utility {
         } else if (weatherId >= 802 && weatherId <= 804) {
             return R.drawable.art_clouds;
         }
-        return -1;
+        //default value for unknow weather
+        return R.drawable.art_clear;
     }
 }

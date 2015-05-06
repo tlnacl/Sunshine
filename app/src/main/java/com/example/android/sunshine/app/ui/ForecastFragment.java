@@ -130,7 +130,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = mForecastAdapter.getCursor();
                 if (cursor != null && cursor.moveToPosition(position)) {
-                    ((Callback)getActivity())
+                    ((Callback) getActivity())
                             .onItemSelected(cursor.getString(COL_WEATHER_DATE));
                 }
                 mPosition = position;
@@ -166,9 +166,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Using the URI scheme for showing a location found on a map.  This super-handy
         // intent can is detailed in the "Common Intents" page of Android's developer site:
         // http://developer.android.com/guide/components/intents-common.html#Maps
-        if ( null != mForecastAdapter ) {
+        if (null != mForecastAdapter) {
             Cursor c = mForecastAdapter.getCursor();
-            if ( null != c ) {
+            if (null != c) {
                 c.moveToPosition(0);
                 String posLat = c.getString(COL_COORD_LAT);
                 String posLong = c.getString(COL_COORD_LONG);
@@ -219,9 +219,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Sort order:  Ascending, by date.
         String sortOrder = WeatherEntry.COLUMN_DATETEXT + " ASC";
 
-        if(mCityId == -1) {
+        if (mCityId == -1) {
             mLocation = Utility.getPreferredLocation(getActivity());
-        }else {
+        } else {
             mLocation = String.valueOf(mCityId);
         }
         Uri weatherForLocationUri = WeatherEntry.buildWeatherLocationWithStartDate(
@@ -241,6 +241,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //if not get any data update weather from server
+        if (data == null || data.getCount() == 0) {
+            updateWeather();
+        }
         mForecastAdapter.swapCursor(data);
         if (mPosition != ListView.INVALID_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
@@ -261,7 +265,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-    public void setCityId(int cityId){
+    public void setCityId(int cityId) {
         mCityId = cityId;
     }
 }

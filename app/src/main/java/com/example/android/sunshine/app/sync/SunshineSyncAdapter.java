@@ -23,15 +23,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import com.example.android.sunshine.app.ui.MainActivity;
+import com.example.android.sunshine.app.BuildConfig;
 import com.example.android.sunshine.app.R;
-import com.example.android.sunshine.app.utils.Utility;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 import com.example.android.sunshine.app.models.WeatherDetail;
 import com.example.android.sunshine.app.models.WeatherForecast;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
+import com.example.android.sunshine.app.ui.MainActivity;
+import com.example.android.sunshine.app.utils.Utility;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -43,12 +44,12 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     // Interval at which to sync with the weather, in milliseconds.
     // 60 seconds (1 minute) * 180 = 3 hours
     public static final int SYNC_INTERVAL = 60 * 180;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private static final int WEATHER_NOTIFICATION_ID = 3004;
 
 
-    private static final String[] NOTIFY_WEATHER_PROJECTION = new String[] {
+    private static final String[] NOTIFY_WEATHER_PROJECTION = new String[]{
             WeatherEntry.COLUMN_WEATHER_ID,
             WeatherEntry.COLUMN_MAX_TEMP,
             WeatherEntry.COLUMN_MIN_TEMP,
@@ -74,48 +75,45 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         OpenWeatherClient client = new OpenWeatherClient();
         WeatherForecast forecast = client.getForcastByCity(Integer.parseInt(cityId));
 
+        long locationId = addLocation(cityId, forecast.getLocation().getCityName(), forecast.getLocation().getLat(), forecast.getLocation().getLon());
+        final List<WeatherDetail> weathers = forecast.getWeather();
+        // Insert the new weather information into the database
+        Vector<ContentValues> cVVector = new Vector<ContentValues>(weathers.size());
+
+        for (WeatherDetail weather : weathers) {
 
 
-            long locationId = addLocation(cityId, forecast.getLocation().getCityName(), forecast.getLocation().getLat(), forecast.getLocation().getLon());
-            final List<WeatherDetail> weathers = forecast.getWeather();
-            // Insert the new weather information into the database
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(weathers.size());
+            ContentValues weatherValues = new ContentValues();
 
-            for(WeatherDetail weather : weathers) {
+            weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationId);
+            //get dt
+            weatherValues.put(WeatherEntry.COLUMN_DATETEXT, WeatherContract.getDbDateString(new Date()));
+            weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, weather.getHumidity());
+            weatherValues.put(WeatherEntry.COLUMN_PRESSURE, weather.getPressure());
+            weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, weather.getWindSpeed());
+            weatherValues.put(WeatherEntry.COLUMN_DEGREES, weather.getWindDirection());
+            weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, weather.getHigh());
+            weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, weather.getLow());
+            weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, weather.getDescription());
+            weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weather.getWeatherId());
 
+            cVVector.add(weatherValues);
+        }
+        if (cVVector.size() > 0) {
+            ContentValues[] cvArray = new ContentValues[cVVector.size()];
+            cVVector.toArray(cvArray);
+            getContext().getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, cvArray);
 
-                ContentValues weatherValues = new ContentValues();
+            Calendar cal = Calendar.getInstance(); //Get's a calendar object with the current time.
+            cal.add(Calendar.DATE, -1); //Signifies yesterday's date
+            String yesterdayDate = WeatherContract.getDbDateString(cal.getTime());
+            getContext().getContentResolver().delete(WeatherEntry.CONTENT_URI,
+                    WeatherEntry.COLUMN_DATETEXT + " <= ?",
+                    new String[]{yesterdayDate});
 
-                weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationId);
-                //get dt
-                weatherValues.put(WeatherEntry.COLUMN_DATETEXT, WeatherContract.getDbDateString(new Date()));
-                weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, weather.getHumidity());
-                weatherValues.put(WeatherEntry.COLUMN_PRESSURE, weather.getPressure());
-                weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, weather.getWindSpeed());
-                weatherValues.put(WeatherEntry.COLUMN_DEGREES, weather.getWindDirection());
-                weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, weather.getHigh());
-                weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, weather.getLow());
-                weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, weather.getDescription());
-                weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weather.getWeatherId());
-
-                cVVector.add(weatherValues);
-            }
-            if ( cVVector.size() > 0 ) {
-                ContentValues[] cvArray = new ContentValues[cVVector.size()];
-                cVVector.toArray(cvArray);
-                getContext().getContentResolver().bulkInsert(WeatherEntry.CONTENT_URI, cvArray);
-
-                Calendar cal = Calendar.getInstance(); //Get's a calendar object with the current time.
-                cal.add(Calendar.DATE, -1); //Signifies yesterday's date
-                String yesterdayDate = WeatherContract.getDbDateString(cal.getTime());
-                getContext().getContentResolver().delete(WeatherEntry.CONTENT_URI,
-                        WeatherEntry.COLUMN_DATETEXT + " <= ?",
-                        new String[] {yesterdayDate});
-
-                notifyWeather();
-            }
-            Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
-
+            notifyWeather();
+        }
+        Log.d(LOG_TAG, "FetchWeatherTask Complete. " + cVVector.size() + " Inserted");
 
 
         // This will only happen if there was an error getting or parsing the forecast.
@@ -131,7 +129,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
                 Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
 
-        if ( displayNotifications ) {
+        if (displayNotifications) {
 
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
             long lastSync = prefs.getLong(lastNotificationKey, 0);
@@ -204,10 +202,10 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Helper method to handle insertion of a new location in the weather database.
      *
-     * @param cityId The location string used to request updates from the server.
+     * @param cityId   The location string used to request updates from the server.
      * @param cityName A human-readable city name, e.g "Mountain View"
-     * @param lat the latitude of the city
-     * @param lon the longitude of the city
+     * @param lat      the latitude of the city
+     * @param lon      the longitude of the city
      * @return the row ID of the added location.
      */
     private long addLocation(String cityId, String cityName, double lat, double lon) {
@@ -259,7 +257,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
      */
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
-        String authority = context.getString(R.string.content_authority);
+        String authority = context.getString(R.string.APPLICATION_ID);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // we can enable inexact timers in our periodic sync
             SyncRequest request = new SyncRequest.Builder().
@@ -275,6 +273,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Helper method to have the sync adapter sync immediately
+     *
      * @param context The context used to access the account service
      */
     public static void syncImmediately(Context context) {
@@ -282,7 +281,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         ContentResolver.requestSync(getSyncAccount(context),
-                context.getString(R.string.content_authority), bundle);
+                BuildConfig.APPLICATION_ID, bundle);
     }
 
     /**
@@ -303,7 +302,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 context.getString(R.string.app_name), context.getString(R.string.sync_account_type));
 
         // If the password doesn't exist, the account doesn't exist
-        if ( null == accountManager.getPassword(newAccount) ) {
+        if (null == accountManager.getPassword(newAccount)) {
 
         /*
          * Add the account and account type, no password or user data
@@ -334,7 +333,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         /*
          * Without calling setSyncAutomatically, our periodic sync will not be enabled.
          */
-        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
+        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.APPLICATION_ID), true);
 
         /*
          * Finally, let's do a sync to get things started

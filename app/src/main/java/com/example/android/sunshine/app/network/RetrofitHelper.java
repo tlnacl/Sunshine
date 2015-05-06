@@ -11,6 +11,8 @@ import com.squareup.okhttp.OkHttpClient;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.RestAdapter;
@@ -39,11 +41,17 @@ public final class RetrofitHelper {
             client.interceptors().add(retryInterceptor);
             client.setRetryOnConnectionFailure(true);
             Gson gson = new GsonBuilder().setDateFormat("ddMMyyyy HH:mm:ss").create();
+
+            //excutor
+            Executor httpExecutor = Executors.newCachedThreadPool();
+            Executor callbackExecutor = Executors.newCachedThreadPool();
+
             RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL)
                     .setErrorHandler(new RetrofitErrorHandler())
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setConverter(new GsonConverter(gson))
                     .setClient(new OkClient(client))
+//                    .setExecutors(httpExecutor,callbackExecutor)
                     .build();
             sOpenWeatherService = restAdapter.create(OpenWeatherService.class);
         }

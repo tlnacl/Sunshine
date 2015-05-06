@@ -5,12 +5,14 @@ android {
     buildToolsVersion "21.1.1"
 
     defaultConfig {
+        applicationId "com.tl.sunshine"
         minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
 
         buildConfigField 'String', 'API_ENDPOINT', '"http://api.openweathermap.org/data/2.5"'
+        resValue 'string', 'APPLICATION_ID', applicationId
     }
     buildTypes {
         release {

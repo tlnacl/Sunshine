@@ -68,7 +68,7 @@
             android:name=".ui.CameraActivity" >
         </activity>
         <provider
-            android:authorities="@string/content_authority"
+            android:authorities="${applicationId}"
             android:name=".data.WeatherProvider"
             android:exported="false"
             android:syncable="true" />
