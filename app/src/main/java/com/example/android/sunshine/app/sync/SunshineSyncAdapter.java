@@ -27,14 +27,15 @@ import com.example.android.sunshine.app.MainActivity;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.Utility;
 import com.example.android.sunshine.app.data.WeatherContract;
-import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
-import com.example.android.sunshine.app.network.RetrofitHelper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
+import com.example.android.sunshine.app.models.WeatherDetail;
+import com.example.android.sunshine.app.models.WeatherForecast;
+import com.example.android.sunshine.app.network.OpenWeatherClient;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
@@ -70,109 +71,32 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         // Getting the zipcode to send to the API
         String cityId = Utility.getPreferredLocation(getContext());
 
-        JsonObject forecastJson = null;
-        forecastJson = RetrofitHelper.getServerApi().getForcastByCity(Integer.parseInt(cityId));
+        OpenWeatherClient client = new OpenWeatherClient();
+        WeatherForecast forecast = client.getForcastByCity(Integer.parseInt(cityId));
 
-        // Now we have a String representing the complete forecast in JSON Format.
-        // Fortunately parsing is easy:  constructor takes the JSON string and converts it
-        // into an Object hierarchy for us.
 
-        // These are the names of the JSON objects that need to be extracted.
 
-        // Location information
-        final String OWM_CITY = "city";
-        final String OWM_CITY_NAME = "name";
-        final String OWM_COORD = "coord";
-
-        // Location coordinate
-        final String OWM_LATITUDE = "lat";
-        final String OWM_LONGITUDE = "lon";
-
-        // Weather information.  Each day's forecast info is an element of the "list" array.
-        final String OWM_LIST = "list";
-
-        final String OWM_DATETIME = "dt";
-        final String OWM_PRESSURE = "pressure";
-        final String OWM_HUMIDITY = "humidity";
-        final String OWM_WINDSPEED = "speed";
-        final String OWM_WIND_DIRECTION = "deg";
-
-        // All temperatures are children of the "temp" object.
-        final String OWM_TEMPERATURE = "temp";
-        final String OWM_MAX = "max";
-        final String OWM_MIN = "min";
-
-        final String OWM_WEATHER = "weather";
-        final String OWM_DESCRIPTION = "main";
-        final String OWM_WEATHER_ID = "id";
-
-            JsonArray weatherArray = forecastJson.getAsJsonArray(OWM_LIST);
-
-            JsonObject cityJson = forecastJson.getAsJsonObject(OWM_CITY);
-            String cityName = cityJson.getAsJsonPrimitive(OWM_CITY_NAME).getAsString();
-
-            JsonObject cityCoord = cityJson.getAsJsonObject(OWM_COORD);
-            double cityLatitude = cityCoord.get(OWM_LATITUDE).getAsDouble();
-            double cityLongitude = cityCoord.get(OWM_LONGITUDE).getAsDouble();
-
-            long locationId = addLocation(cityId, cityName, cityLatitude, cityLongitude);
-
+            long locationId = addLocation(cityId, forecast.getLocation().getCityName(), forecast.getLocation().getLat(), forecast.getLocation().getLon());
+            final List<WeatherDetail> weathers = forecast.getWeather();
             // Insert the new weather information into the database
-            Vector<ContentValues> cVVector = new Vector<ContentValues>(weatherArray.size());
+            Vector<ContentValues> cVVector = new Vector<ContentValues>(weathers.size());
 
-            for(int i = 0; i < weatherArray.size(); i++) {
-                // These are the values that will be collected.
+            for(WeatherDetail weather : weathers) {
 
-                long dateTime;
-                double pressure;
-                int humidity;
-                double windSpeed;
-                double windDirection;
-
-                double high;
-                double low;
-
-                String description;
-                int weatherId;
-
-                // Get the JSON object representing the day
-                JsonObject dayForecast = weatherArray.get(i).getAsJsonObject();
-
-                // The date/time is returned as a long.  We need to convert that
-                // into something human-readable, since most people won't read "1400356800" as
-                // "this saturday".
-                dateTime = dayForecast.get(OWM_DATETIME).getAsLong();
-
-                pressure = dayForecast.get(OWM_PRESSURE).getAsDouble();
-                humidity = dayForecast.get(OWM_HUMIDITY).getAsInt();
-                windSpeed = dayForecast.get(OWM_WINDSPEED).getAsDouble();
-                windDirection = dayForecast.get(OWM_WIND_DIRECTION).getAsDouble();
-
-                // Description is in a child array called "weather", which is 1 element long.
-                // That element also contains a weather code.
-                JsonObject weatherObject =
-                        dayForecast.getAsJsonArray(OWM_WEATHER).get(0).getAsJsonObject();
-                description = weatherObject.get(OWM_DESCRIPTION).getAsString();
-                weatherId = weatherObject.get(OWM_WEATHER_ID).getAsInt();
-
-                // Temperatures are in a child object called "temp".  Try not to name variables
-                // "temp" when working with temperature.  It confuses everybody.
-                JsonObject temperatureObject = dayForecast.getAsJsonObject(OWM_TEMPERATURE);
-                high = temperatureObject.get(OWM_MAX).getAsDouble();
-                low = temperatureObject.get(OWM_MIN).getAsDouble();
 
                 ContentValues weatherValues = new ContentValues();
 
                 weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationId);
-                weatherValues.put(WeatherEntry.COLUMN_DATETEXT, WeatherContract.getDbDateString(new Date(dateTime * 1000L)));
-                weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, humidity);
-                weatherValues.put(WeatherEntry.COLUMN_PRESSURE, pressure);
-                weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, windSpeed);
-                weatherValues.put(WeatherEntry.COLUMN_DEGREES, windDirection);
-                weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, high);
-                weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, low);
-                weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, description);
-                weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weatherId);
+                //get dt
+                weatherValues.put(WeatherEntry.COLUMN_DATETEXT, WeatherContract.getDbDateString(new Date()));
+                weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, weather.getHumidity());
+                weatherValues.put(WeatherEntry.COLUMN_PRESSURE, weather.getPressure());
+                weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, weather.getWindSpeed());
+                weatherValues.put(WeatherEntry.COLUMN_DEGREES, weather.getWindDirection());
+                weatherValues.put(WeatherEntry.COLUMN_MAX_TEMP, weather.getHigh());
+                weatherValues.put(WeatherEntry.COLUMN_MIN_TEMP, weather.getLow());
+                weatherValues.put(WeatherEntry.COLUMN_SHORT_DESC, weather.getDescription());
+                weatherValues.put(WeatherEntry.COLUMN_WEATHER_ID, weather.getWeatherId());
 
                 cVVector.add(weatherValues);
             }
@@ -280,13 +204,13 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Helper method to handle insertion of a new location in the weather database.
      *
-     * @param locationSetting The location string used to request updates from the server.
+     * @param cityId The location string used to request updates from the server.
      * @param cityName A human-readable city name, e.g "Mountain View"
      * @param lat the latitude of the city
      * @param lon the longitude of the city
      * @return the row ID of the added location.
      */
-    private long addLocation(String locationSetting, String cityName, double lat, double lon) {
+    private long addLocation(String cityId, String cityName, double lat, double lon) {
         long locationId;
 
         Log.v(LOG_TAG, "inserting " + cityName + ", with coord: " + lat + ", " + lon);
@@ -296,7 +220,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                 LocationEntry.CONTENT_URI,
                 new String[]{LocationEntry._ID},
                 LocationEntry.COLUMN_CITY_ID + " = ?",
-                new String[]{locationSetting},
+                new String[]{cityId},
                 null);
 
         if (locationCursor.moveToFirst()) {
@@ -310,7 +234,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             // Then add the data, along with the corresponding name of the data type,
             // so the content provider knows what kind of value is being inserted.
             locationValues.put(LocationEntry.COLUMN_CITY_NAME, cityName);
-            locationValues.put(LocationEntry.COLUMN_CITY_ID, locationSetting);
+            locationValues.put(LocationEntry.COLUMN_CITY_ID, cityId);
             locationValues.put(LocationEntry.COLUMN_COORD_LAT, lat);
             locationValues.put(LocationEntry.COLUMN_COORD_LONG, lon);
 

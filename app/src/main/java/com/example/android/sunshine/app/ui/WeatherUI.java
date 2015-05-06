@@ -1,6 +1,6 @@
 package com.example.android.sunshine.app.ui;
 
-import com.example.android.sunshine.app.models.WeatherForecast;
+import com.example.android.sunshine.app.models.CurrentWeather;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 import com.example.android.sunshine.app.utils.ParcelableModel;
@@ -12,7 +12,7 @@ import com.example.android.sunshine.app.utils.ParcelableModel;
 public class WeatherUI extends ParcelableModel implements ClusterItem, Cloneable {
     public static final Creator<WeatherUI> CREATOR = new ParcelableCreator<WeatherUI>(WeatherUI.class);
 
-    public WeatherUI(WeatherForecast forecast) {
+    public WeatherUI(CurrentWeather forecast) {
         cityId = forecast.getCityId();
         cityName = forecast.getCityName();
         latitude = forecast.getLatitude();

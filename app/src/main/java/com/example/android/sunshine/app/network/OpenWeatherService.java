@@ -2,7 +2,6 @@ package com.example.android.sunshine.app.network;
 
 import com.google.gson.JsonObject;
 
-import java.util.List;
 import java.util.Map;
 
 import retrofit.Callback;
@@ -24,10 +23,10 @@ public interface OpenWeatherService {
 //    final String WEATHER_MAP_SEARCH = WEATHER_BASE_URL+"find";
 
     @GET("/forecast/daily?mode=json&units=metric&cnt=14")
-    JsonObject getForcastByCity(@Query("id") int cityId);
+    OpenWeatherClient.DailyWeatherEnvelop getForcastByCity(@Query("id") int cityId);
 
     @GET("/forecast/daily?mode=json&units=metric&cnt=14")
-    void getForcastByCity(@Query("id") int cityId, Callback<JsonObject> callback);
+    void getForcastByCity(@Query("id") int cityId, Callback<OpenWeatherClient.DailyWeatherEnvelop> callback);
 
     @GET("/weather")
     JsonObject currentWeatherByCity(@Query("id") int cityId);
@@ -36,9 +35,9 @@ public interface OpenWeatherService {
     void currentWeatherByCity(@Query("id") int cityId, Callback<JsonObject> callback);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    List<OpenWeatherClient.CurrentWeatherDataEnvelope> weatherMapSearch(@QueryMap Map<String, String> options);
+    OpenWeatherClient.CityInCycleEnvelope weatherMapSearch(@QueryMap Map<String, String> options);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<List<OpenWeatherClient.CurrentWeatherDataEnvelope>> callback);
+    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<OpenWeatherClient.CityInCycleEnvelope> callback);
 
 }

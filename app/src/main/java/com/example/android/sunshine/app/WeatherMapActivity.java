@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.sunshine.app.events.MapSearchEvent;
-import com.example.android.sunshine.app.models.WeatherForecast;
+import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
 import com.example.android.sunshine.app.ui.WeatherUI;
 import com.example.android.sunshine.app.utils.WeatherClusterRenderer;
@@ -221,10 +221,10 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
 
     }
 
-    public void onSearchResult(List<WeatherForecast> findResponse) {
+    public void onSearchResult(List<CurrentWeather> findResponse) {
         if(findResponse!=null) {
             List<WeatherUI> weatherUIs = new ArrayList<>();
-            for(WeatherForecast forecast : findResponse){
+            for(CurrentWeather forecast : findResponse){
                 weatherUIs.add(new WeatherUI(forecast));
             }
             processWeatherUI(weatherUIs);
