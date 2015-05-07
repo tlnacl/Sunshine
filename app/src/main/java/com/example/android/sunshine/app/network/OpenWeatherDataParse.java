@@ -14,11 +14,11 @@ import java.util.List;
 public final class OpenWeatherDataParse {
     public static CurrentWeather parseCurrentWeather(OpenWeatherClient.CurrentWeatherDataEnvelope envelope) {
         //int cityId, String cityName, double latitude, double longitude, double temp, double high, double low, int weatherId
-        return new CurrentWeather(envelope.cityId, envelope.cityName, envelope.coord.lat, envelope.coord.lon,
+        return new CurrentWeather(envelope.cityId, envelope.cityName, envelope.sys.country, envelope.coord.lat, envelope.coord.lon,
                 envelope.main.temp, envelope.main.temp_max, envelope.main.temp_min, envelope.weathers.get(0).weatherId);
     }
 
-    public static List<CurrentWeather> parseCurrentWeathers(OpenWeatherClient.CityInCycleEnvelope envelope) {
+    public static List<CurrentWeather> parseCurrentWeathers(OpenWeatherClient.FindApiEnvelope envelope) {
         List<CurrentWeather> currentWeathers = new ArrayList<>();
         for (OpenWeatherClient.CurrentWeatherDataEnvelope weather : envelope.weatherDataEnvelopes) {
             currentWeathers.add(parseCurrentWeather(weather));

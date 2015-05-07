@@ -1,6 +1,7 @@
 package com.example.android.sunshine.app.network;
 
 import com.example.android.sunshine.app.events.MapSearchEvent;
+import com.example.android.sunshine.app.events.SearchByCityNameEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.models.WeatherForecast;
 import com.example.android.sunshine.app.utils.BusProvider;
@@ -30,9 +31,9 @@ public final class OpenWeatherClient {
         options.put("lat", String.format("%.4f", latLng.latitude));
         options.put("lon", String.format("%.4f", latLng.longitude));
 
-        RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<CityInCycleEnvelope>() {
+        RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<FindApiEnvelope>() {
             @Override
-            public void success(CityInCycleEnvelope weatherDataEnvelope, Response response) {
+            public void success(FindApiEnvelope weatherDataEnvelope, Response response) {
                 //parse to business object
                 BusProvider.getInstance().post(produceMapSearchEvent(OpenWeatherDataParse.parseCurrentWeathers(weatherDataEnvelope)));
             }
@@ -45,14 +46,48 @@ public final class OpenWeatherClient {
         });
     }
 
+    public void doCityWeatherSearch(String cityName) {
+        Map<String, String> options = new HashMap<>();
+        options.put("mode", "json");
+        options.put("units", "metric");
+        options.put("cnt", "10");
+        options.put("type", "like");
+        options.put("q",cityName+"*");
+
+        RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<FindApiEnvelope>() {
+            @Override
+            public void success(FindApiEnvelope weatherDataEnvelope, Response response) {
+                //parse to business object
+                BusProvider.getInstance().post(produceSearchByCityNameEvent(OpenWeatherDataParse.parseCurrentWeathers(weatherDataEnvelope)));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                //TODO post(new ApiErrorEvent(error));
+                BusProvider.getInstance().post(produceSearchByCityNameEvent(null));
+            }
+        });
+    }
+
     //do it sync
     public WeatherForecast getForcastByCity(int cityId){
-        return OpenWeatherDataParse.parseDailyWeather(RetrofitHelper.getServerApi().getForcastByCity(cityId));
+        WeatherForecast weatherForecast = null;
+        try {
+            weatherForecast = OpenWeatherDataParse.parseDailyWeather(RetrofitHelper.getServerApi().getForcastByCity(cityId));
+        } catch (RetrofitError e){
+
+        }
+        return weatherForecast;
     }
 
     @Produce
     public MapSearchEvent produceMapSearchEvent(List<CurrentWeather> currentWeathers) {
         return new MapSearchEvent(currentWeathers);
+    }
+
+    @Produce
+    public SearchByCityNameEvent produceSearchByCityNameEvent(List<CurrentWeather> currentWeathers) {
+        return new SearchByCityNameEvent(currentWeathers);
     }
 
     protected class DailyWeatherEnvelop extends WeatherDataEnvelope {
@@ -69,7 +104,7 @@ public final class OpenWeatherClient {
         }
     }
 
-    protected class CityInCycleEnvelope extends WeatherDataEnvelope {
+    protected class FindApiEnvelope extends WeatherDataEnvelope {
         @SerializedName("list")
         public ArrayList<CurrentWeatherDataEnvelope> weatherDataEnvelopes;
     }
@@ -105,6 +140,7 @@ public final class OpenWeatherClient {
         @SerializedName("dt")
         public long timestamp;
         public Main main;
+        public Sys sys;
         public Coord coord;
         @SerializedName("weather")
         public ArrayList<Weather> weathers;
@@ -115,6 +151,10 @@ public final class OpenWeatherClient {
             public float temp_max;
             public float pressure;
             public int humidity;
+        }
+
+        class Sys{
+            public String country;
         }
     }
 

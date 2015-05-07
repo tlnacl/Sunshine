@@ -119,6 +119,15 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
         return super.onCreateOptionsMenu(menu);
     }
 
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if(item.getItemId() == R.id.search){
+//            this.startActivity(new Intent(this,SearchActivity.class));
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+
     protected Bus getBus(){
         return  BusProvider.getInstance();
     }

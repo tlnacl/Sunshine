@@ -41,10 +41,19 @@
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/ForecastTheme" >
+
+        </activity>
+        <activity android:name=".ui.SearchActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                       android:resource="@xml/searchable"/>
         </activity>
         <activity
             android:label="@string/title_activity_detail"
@@ -68,10 +77,15 @@
             android:name=".ui.CameraActivity" >
         </activity>
         <provider
-            android:authorities="${applicationId}"
+            android:authorities="${applicationId}.database_provider"
             android:name=".data.WeatherProvider"
             android:exported="false"
             android:syncable="true" />
+
+        <provider
+            android:name=".data.SearchHistoryProvider"
+            android:authorities="${applicationId}.search_history_provider"
+            android:syncable="false" />
 
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.SunshineAuthenticatorService">

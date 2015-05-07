@@ -13,6 +13,8 @@ android {
 
         buildConfigField 'String', 'API_ENDPOINT', '"http://api.openweathermap.org/data/2.5"'
         resValue 'string', 'APPLICATION_ID', applicationId
+        resValue 'string', 'DATABASE_PROVIDER', applicationId + '.database_provider'
+        resValue 'string', 'SEARCH_HISTORY_PROVIDER', applicationId + '.search_history_provider'
     }
     buildTypes {
         release {

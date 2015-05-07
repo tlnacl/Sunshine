@@ -6,13 +6,15 @@ package com.example.android.sunshine.app.models;
 public class CurrentWeather extends WeatherBrief{
     private int cityId;
     private String cityName;
+    private String country;
     private double latitude;
     private double longitude;
 
 
-    public CurrentWeather(int cityId, String cityName, double latitude, double longitude, float temp, float high, float low, int weatherId) {
+    public CurrentWeather(int cityId, String cityName, String country, double latitude, double longitude, float temp, float high, float low, int weatherId) {
         this.cityId = cityId;
         this.cityName = cityName;
+        this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
         this.temp = temp;
@@ -27,6 +29,10 @@ public class CurrentWeather extends WeatherBrief{
 
     public String getCityName() {
         return cityName;
+    }
+
+    public String getCountry() {
+        return country;
     }
 
     public double getLatitude() {

@@ -35,9 +35,13 @@ public interface OpenWeatherService {
     void currentWeatherByCity(@Query("id") int cityId, Callback<JsonObject> callback);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    OpenWeatherClient.CityInCycleEnvelope weatherMapSearch(@QueryMap Map<String, String> options);
+    OpenWeatherClient.FindApiEnvelope weatherMapSearch(@QueryMap Map<String, String> options);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<OpenWeatherClient.CityInCycleEnvelope> callback);
+    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<OpenWeatherClient.FindApiEnvelope> callback);
+
+    //search by city name
+    //http://api.openweathermap.org/data/2.5/find?q=London*&type=like&mode=json&cnt=10
+
 
 }

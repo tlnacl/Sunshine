@@ -26,7 +26,7 @@ import com.example.android.sunshine.app.R;
 /**
  * Created by tomtang on 29/04/15.
  */
-public class NavigationDrawerFragment extends Fragment{
+public class NavigationDrawerFragment extends Fragment {
 
     /**
      * Remember the position of the selected item.
@@ -91,11 +91,11 @@ public class NavigationDrawerFragment extends Fragment{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
                 final MenuList menuList = (MenuList) parent.getItemAtPosition(position);
-                Intent intent = new Intent(getActivity(),menuList.getActivityClass());
+                Intent intent = new Intent(getActivity(), menuList.getActivityClass());
                 startActivity(intent);
             }
         });
-        mDrawerListView.setAdapter(new MenuAdapter(getActivity(),R.layout.item_menu));
+        mDrawerListView.setAdapter(new MenuAdapter(getActivity(), R.layout.item_menu));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -231,17 +231,16 @@ public class NavigationDrawerFragment extends Fragment{
 //        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 //        actionBar.setTitle(R.string.app_name);
 //    }
-
     private ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
     enum MenuList {
         MY_WEATHER(R.string.title_my_weather, MainActivity.class),
-        MAP_VIEW(R.string.title_activity_map_weather,WeatherMapActivity.class),
-        CAMERA_VIEW(R.string.title_activity_camera,CameraActivity.class),
-        SETTING(R.string.title_activity_settings,SettingsActivity.class);
-
+        MAP_VIEW(R.string.title_activity_map_weather, WeatherMapActivity.class),
+        CAMERA_VIEW(R.string.title_activity_camera, CameraActivity.class),
+        SEARCH(R.string.title_activity_search, SearchActivity.class),
+        SETTING(R.string.title_activity_settings, SettingsActivity.class);
 
         private Class<?> mActivity;
         private int mName;
@@ -251,7 +250,7 @@ public class NavigationDrawerFragment extends Fragment{
             mActivity = activity;
         }
 
-        public Class<?> getActivityClass(){
+        public Class<?> getActivityClass() {
             return mActivity;
         }
 
@@ -261,7 +260,7 @@ public class NavigationDrawerFragment extends Fragment{
     }
 
     private class MenuAdapter extends ArrayAdapter<MenuList> {
-//        private Context mContext;
+        //        private Context mContext;
         public MenuAdapter(Context context, int resource) {
             super(context, resource, MenuList.values());
         }

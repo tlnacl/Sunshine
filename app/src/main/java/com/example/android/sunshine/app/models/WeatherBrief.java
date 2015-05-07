@@ -20,15 +20,15 @@ public class WeatherBrief {
         this.weatherId = weatherId;
     }
 
-    public double getTemp() {
+    public float getTemp() {
         return temp;
     }
 
-    public double getHigh() {
+    public float getHigh() {
         return high;
     }
 
-    public double getLow() {
+    public float getLow() {
         return low;
     }
 

@@ -41,6 +41,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_map_weather">Map Weather</string>
     <string name="title_activity_camera">Camera</string>
+    <string name="title_activity_search">Search</string>
 
     <!-- Label for the location preference [CHAR LIMIT=30] -->
     <string name="pref_location_label">Location</string>
@@ -149,6 +150,10 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="search_hint">Search by City</string>
+    <string name="search">Search</string>
+
+    <string name="database_provider_authority"></string>
 
 
 </resources>

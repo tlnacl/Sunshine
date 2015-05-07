@@ -3,4 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.android.sunshine.app.ui.MainActivity" >
 
+    <item
+        android:id="@+id/search"
+        android:title="@string/search"
+        app:showAsAction="always"
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:iconifiedByDefault="false"
+        app:actionViewClass="android.widget.SearchView"/>
 </menu>
