@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.android.sunshine.app.R;
+import com.example.android.sunshine.app.data.SuggestionProvider;
 import com.example.android.sunshine.app.events.SearchByCityNameEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
@@ -62,6 +64,9 @@ public class SearchActivity extends BaseActivity {
             // to an Activity.
             String query = intent.getStringExtra(SearchManager.QUERY);
             if(query.length()<3) return;
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
             mClient.doCityWeatherSearch(query);
         }
     }
@@ -149,4 +154,9 @@ public class SearchActivity extends BaseActivity {
         }
 
     }
+
+
+//    SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+//            HelloSuggestionProvider.AUTHORITY, HelloSuggestionProvider.MODE);
+//    suggestions.clearHistory();
 }

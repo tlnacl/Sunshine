@@ -83,7 +83,7 @@
             android:syncable="true" />
 
         <provider
-            android:name=".data.SearchHistoryProvider"
+            android:name=".data.SuggestionProvider"
             android:authorities="${applicationId}.search_history_provider"
             android:syncable="false" />
 
