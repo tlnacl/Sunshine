@@ -1,5 +1,9 @@
 package com.example.android.sunshine.app.network;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.example.android.sunshine.app.BuildConfig;
 import com.example.android.sunshine.app.CoreApplication;
 import com.google.gson.Gson;
@@ -15,6 +19,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
@@ -31,6 +36,7 @@ public final class RetrofitHelper {
 
     public static OpenWeatherService getServerApi() {
         if (sOpenWeatherService == null) {
+//            OkHttp 2.2 has a new feature called interceptors which would allow you to add a Cache-Control header despite the server not sending it. This is very dangerous but very powerful. Usually you would only do this in extreme cases.
             int cacheSize = 10 * 1024 * 1024; // 10 MiB
             File cacheDirectory = new File(CoreApplication.getContext().getCacheDir().getAbsolutePath(), "HttpCache");
             Cache cache = new Cache(cacheDirectory, cacheSize);
@@ -51,6 +57,7 @@ public final class RetrofitHelper {
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setConverter(new GsonConverter(gson))
                     .setClient(new OkClient(client))
+                    .setRequestInterceptor(cacheInterceptor)
 //                    .setExecutors(httpExecutor,callbackExecutor)
                     .build();
             sOpenWeatherService = restAdapter.create(OpenWeatherService.class);
@@ -71,5 +78,30 @@ public final class RetrofitHelper {
             return originalResponse;
         }
     };
+
+    //offline cache
+    private static RequestInterceptor cacheInterceptor = new RequestInterceptor() {
+        @Override
+        public void intercept(RequestFacade request) {
+            request.addHeader("Accept", "application/json;versions=1");
+            if (isNetworkAvaliable()) {
+                int maxAge = 60; // read from cache for 1 minute
+                request.addHeader("Cache-Control", "public, max-age=" + maxAge);
+            } else {
+            int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
+            request.addHeader("Cache-Control",
+                    "public, only-if-cached, max-stale=" + maxStale);
+            }
+        }
+    };
+
+    public static boolean isNetworkAvaliable(){
+        ConnectivityManager cm =
+                (ConnectivityManager)CoreApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
 
 }
