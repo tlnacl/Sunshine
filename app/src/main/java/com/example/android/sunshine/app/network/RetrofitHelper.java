@@ -80,6 +80,9 @@ public final class RetrofitHelper {
     };
 
     //offline cache
+    //Response caching uses HTTP headers for all configuration. You can add request headers like Cache-Control: max-stale=3600 and OkHttp's
+    // cache will honor them. Your webserver configures how long responses are cached with its own response headers, like Cache-Control: max-age=9600.
+    // There are cache headers to force a cached response, force a network response, or force the network response to be validated with a conditional GET.
     private static RequestInterceptor cacheInterceptor = new RequestInterceptor() {
         @Override
         public void intercept(RequestFacade request) {

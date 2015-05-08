@@ -41,6 +41,7 @@ import java.util.Date;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
+ * http://stackoverflow.com/questions/12009895/loader-restarts-on-orientation-change
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
@@ -154,6 +155,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        // If we want to run the same query we use initLoader, if we want to run a different query we use restartLoader.
         getLoaderManager().initLoader(FORECAST_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
     }
