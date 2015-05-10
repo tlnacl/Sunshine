@@ -9,8 +9,9 @@ public class WeatherDetail extends WeatherBrief {
     private float windSpeed;
     private float windDirection;
     private String description;
+    private long timestamp;
 
-    public WeatherDetail(float temp, float high, float low, int weatherId, float humidity, float pressure, float windSpeed, float windDirection, String description) {
+    public WeatherDetail(float temp, float high, float low, int weatherId, float humidity, float pressure, float windSpeed, float windDirection, String description, long timestamp) {
         this.humidity = humidity;
         this.pressure = pressure;
         this.windSpeed = windSpeed;
@@ -20,6 +21,7 @@ public class WeatherDetail extends WeatherBrief {
         this.high = high;
         this.low = low;
         this.weatherId = weatherId;
+        this.timestamp = timestamp;
     }
 
 
@@ -41,5 +43,9 @@ public class WeatherDetail extends WeatherBrief {
 
     public String getDescription() {
         return description;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }

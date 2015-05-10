@@ -23,7 +23,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import com.example.android.sunshine.app.BuildConfig;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
@@ -88,7 +87,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 
             weatherValues.put(WeatherEntry.COLUMN_LOC_KEY, locationId);
             //get dt
-            weatherValues.put(WeatherEntry.COLUMN_DATETEXT, WeatherContract.getDbDateString(new Date()));
+            weatherValues.put(WeatherEntry.COLUMN_DATETEXT, WeatherContract.getDbDateString(new Date(weather.getTimestamp() * 1000L)));
             weatherValues.put(WeatherEntry.COLUMN_HUMIDITY, weather.getHumidity());
             weatherValues.put(WeatherEntry.COLUMN_PRESSURE, weather.getPressure());
             weatherValues.put(WeatherEntry.COLUMN_WIND_SPEED, weather.getWindSpeed());
@@ -258,7 +257,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
      */
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
-        String authority = context.getString(R.string.APPLICATION_ID);
+        String authority = context.getString(R.string.DATABASE_PROVIDER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             // we can enable inexact timers in our periodic sync
             SyncRequest request = new SyncRequest.Builder().
@@ -282,7 +281,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         ContentResolver.requestSync(getSyncAccount(context),
-                BuildConfig.APPLICATION_ID, bundle);
+                context.getString(R.string.DATABASE_PROVIDER), bundle);
     }
 
     /**

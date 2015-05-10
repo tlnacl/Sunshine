@@ -154,6 +154,7 @@
     <string name="search">Search</string>
 
     <string name="database_provider_authority"></string>
+    <string name="content_authority">com.example.android.sunshine.app</string>
 
 
 </resources>

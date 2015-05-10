@@ -7,11 +7,12 @@ public class CurrentWeather extends WeatherBrief{
     private int cityId;
     private String cityName;
     private String country;
-    private double latitude;
-    private double longitude;
+    private float latitude;
+    private float longitude;
+    private long timestamp;
 
 
-    public CurrentWeather(int cityId, String cityName, String country, double latitude, double longitude, float temp, float high, float low, int weatherId) {
+    public CurrentWeather(int cityId, String cityName, String country, float latitude, float longitude, float temp, float high, float low, int weatherId, long timestamp) {
         this.cityId = cityId;
         this.cityName = cityName;
         this.country = country;
@@ -21,6 +22,7 @@ public class CurrentWeather extends WeatherBrief{
         this.high = high;
         this.low = low;
         this.weatherId = weatherId;
+        this.timestamp = timestamp;
     }
 
     public int getCityId() {
@@ -35,11 +37,15 @@ public class CurrentWeather extends WeatherBrief{
         return country;
     }
 
-    public double getLatitude() {
+    public float getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public float getLongitude() {
         return longitude;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }

@@ -15,7 +15,7 @@ public final class OpenWeatherDataParse {
     public static CurrentWeather parseCurrentWeather(OpenWeatherClient.CurrentWeatherDataEnvelope envelope) {
         //int cityId, String cityName, double latitude, double longitude, double temp, double high, double low, int weatherId
         return new CurrentWeather(envelope.cityId, envelope.cityName, envelope.sys.country, envelope.coord.lat, envelope.coord.lon,
-                envelope.main.temp, envelope.main.temp_max, envelope.main.temp_min, envelope.weathers.get(0).weatherId);
+                envelope.main.temp, envelope.main.temp_max, envelope.main.temp_min, envelope.weathers.get(0).weatherId, envelope.timestamp);
     }
 
     public static List<CurrentWeather> parseCurrentWeathers(OpenWeatherClient.FindApiEnvelope envelope) {
@@ -34,7 +34,7 @@ public final class OpenWeatherDataParse {
             weatherDetails.add(new WeatherDetail(forcastDataEnvelope.temp.temp, forcastDataEnvelope.temp.temp_max,
                     forcastDataEnvelope.temp.temp_min, forcastDataEnvelope.weathers.get(0).weatherId,
                     forcastDataEnvelope.humidity, forcastDataEnvelope.pressure, forcastDataEnvelope.windSpeed,
-                    forcastDataEnvelope.windDirection, forcastDataEnvelope.weathers.get(0).description));
+                    forcastDataEnvelope.windDirection, forcastDataEnvelope.weathers.get(0).description, forcastDataEnvelope.timestamp));
         }
         return new WeatherForecast(location, weatherDetails);
     }
