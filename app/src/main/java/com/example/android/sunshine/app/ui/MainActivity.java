@@ -97,5 +97,4 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
             startActivity(intent);
         }
     }
-
 }

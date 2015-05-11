@@ -4,10 +4,8 @@
     tools:context="com.example.android.sunshine.app.ui.MainActivity" >
 
     <item
-        android:id="@+id/search"
+        android:id="@+id/nav_to_search"
         android:title="@string/search"
         app:showAsAction="always"
-        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"
-        android:iconifiedByDefault="false"
-        app:actionViewClass="android.widget.SearchView"/>
+        android:icon="@drawable/abc_ic_search_api_mtrl_alpha"/>
 </menu>

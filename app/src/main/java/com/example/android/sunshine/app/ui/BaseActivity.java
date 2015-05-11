@@ -1,11 +1,13 @@
 package com.example.android.sunshine.app.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout;
@@ -119,14 +121,14 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
         return super.onCreateOptionsMenu(menu);
     }
 
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if(item.getItemId() == R.id.search){
-//            this.startActivity(new Intent(this,SearchActivity.class));
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.nav_to_search){
+            this.startActivity(new Intent(this, SearchActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     protected Bus getBus(){
         return  BusProvider.getInstance();

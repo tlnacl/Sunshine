@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.android.sunshine.app" >
+<manifest package="com.example.android.sunshine.app"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- This permission is necessary in order for Sunshine to perform network access. -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
 
     <!-- Permissions required by the sync adapter -->
     <uses-permission
@@ -25,75 +25,79 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
+        android:name=".CoreApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".CoreApplication">
+        android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCMMpnQzRDfaZaIGVt7krXqX_pKVmCRnVY"/>
 
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/ForecastTheme" >
+            android:theme="@style/ForecastTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SearchActivity"
-            android:launchMode="singleTop">
+        <activity
+            android:name=".ui.SearchActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
+                <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                       android:resource="@xml/searchable"/>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
         </activity>
         <activity
-            android:label="@string/title_activity_detail"
-            android:name=".ui.DetailActivity" >
+            android:name=".ui.DetailActivity"
+            android:label="@string/title_activity_detail">
         </activity>
         <activity
-            android:label="@string/title_activity_settings"
             android:name=".ui.SettingsActivity"
-            android:parentActivityName=".ui.MainActivity" >
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value=".ui.MainActivity"/>
         </activity>
         <activity
-            android:label="@string/title_activity_map_weather"
             android:name=".ui.WeatherMapActivity"
-            android:parentActivityName=".ui.MainActivity" >
+            android:label="@string/title_activity_map_weather"
+            android:parentActivityName=".ui.MainActivity">
         </activity>
         <activity
-            android:label="@string/title_activity_camera"
-            android:name=".ui.CameraActivity" >
+            android:name=".ui.CameraActivity"
+            android:label="@string/title_activity_camera">
         </activity>
+
         <provider
-            android:authorities="${applicationId}.database_provider"
             android:name=".data.WeatherProvider"
+            android:authorities="${applicationId}.database_provider"
             android:exported="false"
-            android:syncable="true" />
+            android:syncable="true"/>
 
         <provider
             android:name=".data.SuggestionProvider"
             android:authorities="${applicationId}.search_history_provider"
-            android:syncable="false" />
+            android:syncable="false"/>
 
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.SunshineAuthenticatorService">
             <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
+                <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
+                android:resource="@xml/authenticator"/>
         </service>
 
         <!-- The SyncAdapter service -->
@@ -102,11 +106,11 @@
             android:exported="true"
             >
             <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
+                <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter" />
+                android:resource="@xml/syncadapter"/>
         </service>
 
     </application>
