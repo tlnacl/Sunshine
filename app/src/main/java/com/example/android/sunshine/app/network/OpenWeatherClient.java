@@ -164,6 +164,14 @@ public final class OpenWeatherClient {
     protected class WeatherDataEnvelope {
         @SerializedName("cod")
         private int httpCode;
+
+        public WeatherDataEnvelope filterResponse(){
+            if(httpCode == 200){
+                return this;
+            } else {
+                return null;
+            }
+        }
     }
 
     protected class Weather {

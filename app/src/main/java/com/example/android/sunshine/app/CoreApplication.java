@@ -3,6 +3,8 @@ package com.example.android.sunshine.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+
 /**
  * Created by tlnacl on 16/12/14.
  */
@@ -23,6 +25,13 @@ public class CoreApplication extends Application {
     // ***************************************
     @Override
     public void onCreate() {
+        if(BuildConfig.DEBUG) {
+            Stetho.initialize(
+                    Stetho.newInitializerBuilder(this)
+                            .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                            .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
+                            .build());
+        }
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
 //                .detectNetwork()
 //                .penaltyLog()
