@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -23,15 +25,21 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
+import static com.example.android.sunshine.app.data.SuggestionProvider.AUTHORITY;
+
 /**
  * Created by tomtang on 7/05/15.
  */
-public class SearchActivity extends BaseActivity {
+public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener{
+    public static final String TAG = SearchActivity.class.getSimpleName();
     public static final String QUERY_KEY = "query";
 
     private ListView mSearchListView;
     private SearchResultAdapter mAdapter;
     private OpenWeatherClient mClient;
+    private String mquery;
+    private boolean mLoading;
+    private boolean mQueryChanged;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,38 +49,31 @@ public class SearchActivity extends BaseActivity {
         mClient = new OpenWeatherClient();
         mSearchListView = (ListView) findViewById(R.id.search_list);
 
-        if (getIntent() != null) {
-            handleIntent(getIntent());
-        }
+        mLoading = false;
+        mQueryChanged = false;
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        handleIntent(intent);
+//    }
 
-    /**
-     * Assuming this activity was started with a new intent, process the incoming information and
-     * react accordingly.
-     * @param intent
-     */
-    private void handleIntent(Intent intent) {
-        // Special processing of the incoming intent only occurs if the if the action specified
-        // by the intent is ACTION_SEARCH.
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            // SearchManager.QUERY is the key that a SearchManager will use to send a query string
-            // to an Activity.
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            if(query.length()<3) return;
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
+    private void handleQuery(String query) {
+        if (!TextUtils.isEmpty(query) && query.length() > 2) {
+            mLoading = true;
             mClient.doCityWeatherSearch(query);
+        } else {
+            //clean list view
         }
     }
 
     @Subscribe
     public void onSearchByCityNameReturn(SearchByCityNameEvent event){
+        mLoading = false;
+        if(mQueryChanged){
+            handleQuery(mquery);
+            mQueryChanged = false;
+        }
         if(mAdapter == null){
             mAdapter = new SearchResultAdapter(this,event.result);
             mSearchListView.setAdapter(mAdapter);
@@ -94,7 +95,24 @@ public class SearchActivity extends BaseActivity {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(this);
 
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+            mquery = query;
+            if(mLoading){
+                mQueryChanged = true;
+            }else {
+                handleQuery(query);
+            }
         return true;
     }
 
@@ -150,7 +168,17 @@ public class SearchActivity extends BaseActivity {
         }
 
         public void bind(String city, String country, float temp){
-            mSearchResult.setText(city + "," + country + ",  " + temp);
+            mSearchResult.setText(city + "," + country);
+            mSearchResult.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //save search history
+                    SearchRecentSuggestions suggestions = new SearchRecentSuggestions(SearchActivity.this,
+                            AUTHORITY, SuggestionProvider.MODE);
+                    suggestions.saveRecentQuery(mquery, null);
+
+                }
+            });
         }
 
     }

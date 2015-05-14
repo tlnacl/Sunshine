@@ -195,7 +195,8 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
          *
          * set loading = true when start to load data
          * if loading = true set cameraChanged = true instead of load again
-         * after load set loading = false if cameraChanged
+         * after load set loading = false
+         * if cameraChanged load and set camerachanged = false
          */
         loading = true;
 
