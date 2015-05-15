@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -84,20 +85,21 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
+        LinearLayout drawerLayout = (LinearLayout) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
+        mDrawerListView = (ListView) drawerLayout.findViewById(R.id.drawer_list);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
-                final MenuList menuList = (MenuList) parent.getItemAtPosition(position);
-                Intent intent = new Intent(getActivity(), menuList.getActivityClass());
+                final DrawerList drawerList = (DrawerList) parent.getItemAtPosition(position);
+                Intent intent = new Intent(getActivity(), drawerList.getActivityClass());
                 startActivity(intent);
             }
         });
-        mDrawerListView.setAdapter(new MenuAdapter(getActivity(), R.layout.item_menu));
+        mDrawerListView.setAdapter(new DrawerAdapter(getActivity(), R.layout.item_menu));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+        return drawerLayout;
     }
 
     public boolean isDrawerOpen() {
@@ -235,7 +237,7 @@ public class NavigationDrawerFragment extends Fragment {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }
 
-    enum MenuList {
+    enum DrawerList {
         MY_WEATHER(R.string.title_my_weather, MainActivity.class),
         MAP_VIEW(R.string.title_activity_map_weather, WeatherMapActivity.class),
         CAMERA_VIEW(R.string.title_activity_camera, CameraActivity.class),
@@ -245,7 +247,7 @@ public class NavigationDrawerFragment extends Fragment {
         private Class<?> mActivity;
         private int mName;
 
-        MenuList(int name, Class<?> activity) {
+        DrawerList(int name, Class<?> activity) {
             mName = name;
             mActivity = activity;
         }
@@ -259,17 +261,17 @@ public class NavigationDrawerFragment extends Fragment {
         }
     }
 
-    private class MenuAdapter extends ArrayAdapter<MenuList> {
+    private class DrawerAdapter extends ArrayAdapter<DrawerList> {
         //        private Context mContext;
-        public MenuAdapter(Context context, int resource) {
-            super(context, resource, MenuList.values());
+        public DrawerAdapter(Context context, int resource) {
+            super(context, resource, DrawerList.values());
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            final TextView text1 = (TextView) super.getView(position, convertView, parent);
-            final MenuList menuList = getItem(position);
-            text1.setText(menuList.getName());
+            final TextView text1 = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.item_main_drawer,parent,false);
+            final DrawerList drawerList = getItem(position);
+            text1.setText(drawerList.getName());
             return text1;
         }
     }
