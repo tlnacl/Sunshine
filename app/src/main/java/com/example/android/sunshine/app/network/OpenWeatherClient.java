@@ -1,5 +1,9 @@
 package com.example.android.sunshine.app.network;
 
+import android.widget.Toast;
+
+import com.example.android.sunshine.app.CoreApplication;
+import com.example.android.sunshine.app.events.GetForcastByCityIdEvent;
 import com.example.android.sunshine.app.events.MapSearchEvent;
 import com.example.android.sunshine.app.events.SearchByCityNameEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
@@ -40,8 +44,7 @@ public final class OpenWeatherClient {
 
             @Override
             public void failure(RetrofitError error) {
-                //TODO post(new ApiErrorEvent(error));
-                BusProvider.getInstance().post(produceMapSearchEvent(null));
+                Toast.makeText(CoreApplication.getContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
             }
         });
     }
@@ -63,14 +66,27 @@ public final class OpenWeatherClient {
 
             @Override
             public void failure(RetrofitError error) {
-                //TODO post(new ApiErrorEvent(error));
-                BusProvider.getInstance().post(produceSearchByCityNameEvent(null));
+                Toast.makeText(CoreApplication.getContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
+    public void getForcastByCityId(int cityId){
+        RetrofitHelper.getServerApi().getForcastByCity(cityId, new Callback<DailyWeatherEnvelop>() {
+            @Override
+            public void success(DailyWeatherEnvelop dailyWeatherEnvelop, Response response) {
+                BusProvider.getInstance().post(produceGetForcastByCityIdEvent(OpenWeatherDataParse.parseDailyWeather(dailyWeatherEnvelop)));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(CoreApplication.getContext(),error.getLocalizedMessage(),Toast.LENGTH_SHORT);
             }
         });
     }
 
     //do it sync
-    public WeatherForecast getForcastByCity(int cityId){
+    public WeatherForecast getForcastByCityInSync(int cityId){
         WeatherForecast weatherForecast = null;
         try {
             weatherForecast = OpenWeatherDataParse.parseDailyWeather(RetrofitHelper.getServerApi().getForcastByCity(cityId));
@@ -78,6 +94,10 @@ public final class OpenWeatherClient {
 
         }
         return weatherForecast;
+    }
+
+    public GetForcastByCityIdEvent produceGetForcastByCityIdEvent(WeatherForecast forecast){
+        return new GetForcastByCityIdEvent(forecast);
     }
 
     @Produce

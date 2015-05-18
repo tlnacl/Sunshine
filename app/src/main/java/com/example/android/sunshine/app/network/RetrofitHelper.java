@@ -57,7 +57,7 @@ public final class RetrofitHelper {
             Executor callbackExecutor = Executors.newCachedThreadPool();
 
             RestAdapter restAdapter = new RestAdapter.Builder().setEndpoint(API_URL)
-                    .setErrorHandler(new RetrofitErrorHandler())
+                    .setErrorHandler(new RetrofitErrorHandler(CoreApplication.getContext()))
                     .setLogLevel(RestAdapter.LogLevel.FULL)
                     .setConverter(new GsonConverter(gson))
                     .setClient(new OkClient(client))

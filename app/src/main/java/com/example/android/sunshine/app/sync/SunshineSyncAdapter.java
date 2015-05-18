@@ -72,7 +72,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         String cityId = Utility.getPreferredLocation(getContext());
 
         OpenWeatherClient client = new OpenWeatherClient();
-        WeatherForecast forecast = client.getForcastByCity(Integer.parseInt(cityId));
+        WeatherForecast forecast = client.getForcastByCityInSync(Integer.parseInt(cityId));
         if(forecast == null) return;
 
         long locationId = addLocation(cityId, forecast.getLocation().getCityName(), forecast.getLocation().getLat(), forecast.getLocation().getLon());

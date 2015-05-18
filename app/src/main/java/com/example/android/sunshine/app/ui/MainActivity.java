@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
 
     private boolean mTwoPane;
 
-    private int cityId = -1;
+    private String mCityId;
 
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
@@ -57,12 +57,12 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
             mTwoPane = false;
         }
 
-        cityId = getIntent().getIntExtra(Constant.CITY_ID,-1);
+        mCityId = getIntent().getStringExtra(Constant.CITY_ID);
 
         ForecastFragment forecastFragment =  ((ForecastFragment)getFragmentManager()
                 .findFragmentById(R.id.fragment_forecast));
         forecastFragment.setUseTodayLayout(!mTwoPane);
-        forecastFragment.setCityId(cityId);
+        forecastFragment.setCityId(mCityId);
 
         SunshineSyncAdapter.initializeSyncAdapter(this);
 

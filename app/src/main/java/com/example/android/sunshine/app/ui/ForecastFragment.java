@@ -34,8 +34,11 @@ import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.data.WeatherContract.LocationEntry;
 import com.example.android.sunshine.app.data.WeatherContract.WeatherEntry;
+import com.example.android.sunshine.app.events.GetForcastByCityIdEvent;
+import com.example.android.sunshine.app.network.OpenWeatherClient;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 import com.example.android.sunshine.app.utils.Utility;
+import com.squareup.otto.Subscribe;
 
 import java.util.Date;
 
@@ -47,11 +50,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final String LOG_TAG = ForecastFragment.class.getSimpleName();
     private ForecastAdapter mForecastAdapter;
 
-    private String mLocation;
+    private String mCityId;
     private ListView mListView;
     private int mPosition = ListView.INVALID_POSITION;
     private boolean mUseTodayLayout;
-    private int mCityId;
 
     private static final String SELECTED_KEY = "selected_position";
 
@@ -156,8 +158,19 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // If we want to run the same query we use initLoader, if we want to run a different query we use restartLoader.
-        getLoaderManager().initLoader(FORECAST_LOADER, null, this);
+        if (mCityId == null || mCityId.equals(Utility.getPreferredLocation(getActivity()))) {
+            getLoaderManager().initLoader(FORECAST_LOADER, null, this);
+        }else {
+            //get from network
+            OpenWeatherClient client = new OpenWeatherClient();
+            client.getForcastByCityInSync(Integer.parseInt(mCityId));
+        }
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Subscribe
+    public void onForcastbyCityReturn(GetForcastByCityIdEvent event){
+
     }
 
     private void updateWeather() {
@@ -189,13 +202,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mLocation != null && !mLocation.equals(Utility.getPreferredLocation(getActivity()))) {
-            getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (mCityId != null && !mCityId.equals(Utility.getPreferredLocation(getActivity()))) {
+//            getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+//        }
+//    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -221,13 +234,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Sort order:  Ascending, by date.
         String sortOrder = WeatherEntry.COLUMN_DATETEXT + " ASC";
 
-        if (mCityId == -1) {
-            mLocation = Utility.getPreferredLocation(getActivity());
-        } else {
-            mLocation = String.valueOf(mCityId);
-        }
+        mCityId = Utility.getPreferredLocation(getActivity());
         Uri weatherForLocationUri = WeatherEntry.buildWeatherLocationWithStartDate(
-                mLocation, startDate);
+                mCityId, startDate);
 
         // Now create and return a CursorLoader that will take care of
         // creating a Cursor for the data being displayed.
@@ -244,9 +253,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         //if not get any data update weather from server
-        if (data == null || data.getCount() == 0) {
-            updateWeather();
-        }
+//        if (data == null || data.getCount() == 0) {
+//            updateWeather();
+//        }
         mForecastAdapter.swapCursor(data);
         if (mPosition != ListView.INVALID_POSITION) {
             // If we don't need to restart the loader, and there's a desired position to restore
@@ -267,7 +276,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         }
     }
 
-    public void setCityId(int cityId) {
+    public void setCityId(String cityId) {
         mCityId = cityId;
     }
 }

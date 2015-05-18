@@ -156,5 +156,10 @@
     <string name="database_provider_authority"></string>
     <string name="content_authority">com.example.android.sunshine.app</string>
 
+    <!--network error-->
+    <string name="error_network_http_error">Network http error</string>
+    <string name="error_network">Network  error</string>
+    <string name="error_no_response">No response</string>
+    <string name="error_unknown">Unknow error please contact us</string>
 
 </resources>
