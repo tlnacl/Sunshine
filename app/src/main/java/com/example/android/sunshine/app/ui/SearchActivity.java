@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.SuggestionProvider;
 import com.example.android.sunshine.app.events.SearchByCityNameEvent;
@@ -155,7 +156,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                 holder = (SearchResultHolder) convertView.getTag();
             }
             final CurrentWeather weather = mCurrentWeathers.get(position);
-            holder.bind(weather.getCityName(),weather.getCountry(),weather.getTemp());
+            holder.bind(weather.getCityId(),weather.getCityName(),weather.getCountry(),weather.getTemp());
             return convertView;
         }
     }
@@ -167,7 +168,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
             mSearchResult = (TextView) view.findViewById(R.id.search_result);
         }
 
-        public void bind(String city, String country, float temp){
+        public void bind(final int cityId, String city, String country, float temp){
             mSearchResult.setText(city + "," + country);
             mSearchResult.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -176,6 +177,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                     SearchRecentSuggestions suggestions = new SearchRecentSuggestions(SearchActivity.this,
                             AUTHORITY, SuggestionProvider.MODE);
                     suggestions.saveRecentQuery(mquery, null);
+
+                    Intent i = new Intent(SearchActivity.this,MainActivity.class);
+                    i.putExtra(Constant.CITY_ID,cityId);
+                    startActivity(i);
 
                 }
             });

@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 
+import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
@@ -56,7 +57,7 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
             mTwoPane = false;
         }
 
-        cityId = getIntent().getIntExtra("cityId",-1);
+        cityId = getIntent().getIntExtra(Constant.CITY_ID,-1);
 
         ForecastFragment forecastFragment =  ((ForecastFragment)getFragmentManager()
                 .findFragmentById(R.id.fragment_forecast));

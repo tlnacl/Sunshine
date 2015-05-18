@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.events.MapSearchEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import timber.log.Timber;
+
 
 /**
  * Created by tlnacl on 15/12/14.
@@ -47,11 +50,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     public static final float DO_NOT_CHANGE_ZOOM = -1f;
     private static final float START_ZOOM_LEVEL = 11f;
 
-    private static final String CITY_ID = "cityId";
-
     private ClusterManager<WeatherUI> mClusterManager;
-
-    private final String TAG = WeatherMapActivity.class.getSimpleName();
     private GoogleMap mMap;
     private MarkerHelper<WeatherUI> mMarkerHelper;
 
@@ -170,7 +169,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
                 //The smallest bounding box that includes the visible region defined in this class.
                 LatLngBounds bounds = visibleRegion.latLngBounds;
 
-                Log.i(TAG, "bounds.northeast:" + bounds.northeast + "  bounds.southwest:" + bounds.southwest);
+                Timber.i("bounds.northest: %s bounds.southwest: %s", bounds.northeast, bounds.southwest);
 
                 final LatLng latLng = mMap.getCameraPosition().target;
 
@@ -238,7 +237,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
     private void processWeatherUI(List<WeatherUI> weatherUIs) {
-        Log.i(TAG,"process WeatherUI"+weatherUIs);
+        Timber.i("process WeatherUI %s", weatherUIs);
         MarkerHelper.MarkerState<WeatherUI> markerState = mMarkerHelper.setItems(weatherUIs);
         for(WeatherUI removedWeatherItem : markerState.getRemovedItems()) {
             mClusterManager.removeItem(removedWeatherItem);
@@ -281,6 +280,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
         renderSummaryView(weatherUI);
         showWeatherSummary(true);
 //        Toast.makeText(this, weatherUI.getCityName() + " weather is:" + weatherUI.getDescription(), Toast.LENGTH_SHORT).show();
+        Timber.i("%s weater is: %s", weatherUI.getCityName(),weatherUI.getDescription());
     }
 
     private void renderSummaryView(WeatherUI weatherUI) {
@@ -305,8 +305,9 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
     private boolean onClusterClicked(Cluster<WeatherUI> weatherCluster) {
-        //TODO list result city weathers
+        //TODO list result city weathers here can find by multiple city id api
         Toast.makeText(this, "onClusterClicked", Toast.LENGTH_SHORT).show();
+        Timber.i("on cluster clicked");
         return true;
     }
 
@@ -368,7 +369,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
     private void onWeatherSummaryClicked(View view) {
-        Intent intent = new Intent(this,MainActivity.class).putExtra(CITY_ID,cityId);
+        Intent intent = new Intent(this,MainActivity.class).putExtra(Constant.CITY_ID,cityId);
         startActivity(intent);
     }
 }
