@@ -11,15 +11,15 @@ import android.view.MenuItem;
 
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout;
-import com.example.android.sunshine.app.utils.BusProvider;
-import com.squareup.otto.Bus;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by tlnacl on 30/12/14.
  */
 public abstract class BaseActivity extends ActionBarActivity implements MultiSwipeRefreshLayout.CanChildScrollUpCallback {
     private ActionBar mActionBar;
-
+    protected final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     // SwipeRefreshLayout allows the user to swipe the screen down to trigger a manual refresh
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -130,21 +130,9 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
         return super.onOptionsItemSelected(item);
     }
 
-    protected Bus getBus(){
-        return  BusProvider.getInstance();
-    }
-
-    @Override protected void onResume() {
-        super.onResume();
-
-        // Register ourselves so that we can provide the initial value.
-        getBus().register(this);
-    }
-
-    @Override protected void onPause() {
-        super.onPause();
-
-        // Always unregister when an object no longer should be on the bus.
-        getBus().unregister(this);
+    @Override
+    protected void onDestroy() {
+        mCompositeSubscription.unsubscribe();
+        super.onDestroy();
     }
 }

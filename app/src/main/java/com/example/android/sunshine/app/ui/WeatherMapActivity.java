@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.sharedpreference.SharedPreferenceHelper;
-import com.example.android.sunshine.app.events.MapSearchEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
 import com.example.android.sunshine.app.utils.Utility;
@@ -33,19 +32,21 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 
 /**
  * Created by tlnacl on 15/12/14.
  */
-public class WeatherMapActivity extends BaseActivity implements View.OnClickListener{
+public class WeatherMapActivity extends BaseActivity implements View.OnClickListener {
 
     public static final float DO_NOT_CHANGE_ZOOM = -1f;
     private static final float START_ZOOM_LEVEL = 11f;
@@ -74,10 +75,10 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
         mLayerSwitch = (ImageButton) this.findViewById(R.id.layer_switch);
         mLayerSwitch.setOnClickListener(this);
 
-        mWeatherSummaryView = (ViewGroup)this.findViewById(R.id.weather_summary);
+        mWeatherSummaryView = (ViewGroup) this.findViewById(R.id.weather_summary);
         mWeatherSummaryView.setVisibility(View.GONE);
         mSummaryView = mWeatherSummaryView.getChildAt(0);
-        if(mSummaryView!=null) {
+        if (mSummaryView != null) {
             mSummaryView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -85,7 +86,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
                 }
             });
         }
-        mWeatherCount = (TextView)findViewById(R.id.weather_count);
+        mWeatherCount = (TextView) findViewById(R.id.weather_count);
     }
 
     @Override
@@ -199,14 +200,30 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
          */
         loading = true;
 
-        OpenWeatherClient openWeatherClient = new OpenWeatherClient();
-        openWeatherClient.doMapSearch(latLng);
+        mCompositeSubscription.add(OpenWeatherClient.doMapSearch(latLng)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<CurrentWeather>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<CurrentWeather> weathers) {
+                        onMapSearchReturn(weathers);
+                    }
+                }));
     }
 
-    @Subscribe
-    public void onMapSearchReturn(MapSearchEvent event){
-        if(event.result != null) {
-            onSearchResult(event.result);
+    public void onMapSearchReturn(List<CurrentWeather> weathers) {
+        if (weathers != null) {
+            onSearchResult(weathers);
         }
         onRefreshingStateChanged(false);
         checkCameraChange();
@@ -214,18 +231,18 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
 
     private void checkCameraChange() {
         loading = false;
-        if(cameraChanged == true) {
+        if (cameraChanged == true) {
             cameraChanged = false;
-            if(lastLatLng!=null)
-            doMapSearch(lastLatLng);
+            if (lastLatLng != null)
+                doMapSearch(lastLatLng);
         }
 
     }
 
     public void onSearchResult(List<CurrentWeather> findResponse) {
-        if(findResponse!=null) {
+        if (findResponse != null) {
             List<WeatherUI> weatherUIs = new ArrayList<>();
-            for(CurrentWeather forecast : findResponse){
+            for (CurrentWeather forecast : findResponse) {
                 weatherUIs.add(new WeatherUI(forecast));
             }
             processWeatherUI(weatherUIs);
@@ -239,7 +256,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     private void processWeatherUI(List<WeatherUI> weatherUIs) {
         Timber.i("process WeatherUI %s", weatherUIs);
         MarkerHelper.MarkerState<WeatherUI> markerState = mMarkerHelper.setItems(weatherUIs);
-        for(WeatherUI removedWeatherItem : markerState.getRemovedItems()) {
+        for (WeatherUI removedWeatherItem : markerState.getRemovedItems()) {
             mClusterManager.removeItem(removedWeatherItem);
         }
 //        mClusterManager.clearItems();
@@ -280,7 +297,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
         renderSummaryView(weatherUI);
         showWeatherSummary(true);
 //        Toast.makeText(this, weatherUI.getCityName() + " weather is:" + weatherUI.getDescription(), Toast.LENGTH_SHORT).show();
-        Timber.i("%s weater is: %s", weatherUI.getCityName(),weatherUI.getDescription());
+        Timber.i("%s weater is: %s", weatherUI.getCityName(), weatherUI.getDescription());
     }
 
     private void renderSummaryView(WeatherUI weatherUI) {
@@ -314,7 +331,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
 
     private boolean showWeatherSummary(final boolean show) {
         int viewState = show ? View.VISIBLE : View.GONE;
-        if(viewState == mWeatherSummaryView.getVisibility()) {
+        if (viewState == mWeatherSummaryView.getVisibility()) {
             return false;
         } else {
             Animation animation = AnimationUtils.loadAnimation(this,
@@ -323,16 +340,17 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
             animation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-                    if(show) mWeatherSummaryView.setVisibility(View.VISIBLE);
+                    if (show) mWeatherSummaryView.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    if(!show) mWeatherSummaryView.setVisibility(View.GONE);
+                    if (!show) mWeatherSummaryView.setVisibility(View.GONE);
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {
+                }
             });
             mWeatherSummaryView.startAnimation(animation);
             return true;
@@ -340,10 +358,9 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
 
-
     @Override
     public void onClick(View view) {
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.current_location:
                 animateCameraToMyLocation(mMap.getMyLocation(), DO_NOT_CHANGE_ZOOM);
                 break;
@@ -369,7 +386,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
     private void onWeatherSummaryClicked(View view) {
-        Intent intent = new Intent(this,MainActivity.class).putExtra(Constant.CITY_ID,cityId);
+        Intent intent = new Intent(this, MainActivity.class).putExtra(Constant.CITY_ID, cityId);
         startActivity(intent);
     }
 }

@@ -206,7 +206,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         /*
          * Without calling setSyncAutomatically, our periodic sync will not be enabled.
          */
-        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.APPLICATION_ID), true);
+        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
 
         /*
          * Finally, let's do a sync to get things started

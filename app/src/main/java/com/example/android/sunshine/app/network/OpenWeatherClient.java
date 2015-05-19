@@ -1,32 +1,25 @@
 package com.example.android.sunshine.app.network;
 
-import android.widget.Toast;
-
-import com.example.android.sunshine.app.CoreApplication;
-import com.example.android.sunshine.app.events.MapSearchEvent;
-import com.example.android.sunshine.app.events.SearchByCityNameEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.models.WeatherForecast;
-import com.example.android.sunshine.app.utils.BusProvider;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
-import com.squareup.otto.Produce;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by tomtang on 4/05/15.
  */
 public final class OpenWeatherClient {
 
-    public void doMapSearch(LatLng latLng) {
+    public static Observable<List<CurrentWeather>> doMapSearch(LatLng latLng) {
         Map<String, String> options = new HashMap<>();
         options.put("mode", "json");
         options.put("units", "metric");
@@ -34,21 +27,16 @@ public final class OpenWeatherClient {
         options.put("lat", String.format("%.4f", latLng.latitude));
         options.put("lon", String.format("%.4f", latLng.longitude));
 
-        RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<FindApiEnvelope>() {
+        return RetrofitHelper.getServerApi().weatherMapSearch(options).map(new Func1<FindApiEnvelope, List<CurrentWeather>>() {
             @Override
-            public void success(FindApiEnvelope weatherDataEnvelope, Response response) {
-                //parse to business object
-                BusProvider.getInstance().post(produceMapSearchEvent(OpenWeatherDataParse.parseCurrentWeathers(weatherDataEnvelope)));
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(CoreApplication.getContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+            public List<CurrentWeather> call(FindApiEnvelope findApiEnvelope) {
+                return OpenWeatherDataParse.parseCurrentWeathers(findApiEnvelope);
             }
         });
+
     }
 
-    public void doCityWeatherSearch(String cityName) {
+    public static Observable<List<CurrentWeather>> doCityWeatherSearch(String cityName) {
         Map<String, String> options = new HashMap<>();
         options.put("mode", "json");
         options.put("units", "metric");
@@ -56,33 +44,13 @@ public final class OpenWeatherClient {
         options.put("type", "like");
         options.put("q",cityName+"*");
 
-        RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<FindApiEnvelope>() {
+        return RetrofitHelper.getServerApi().weatherMapSearch(options).map(new Func1<FindApiEnvelope, List<CurrentWeather>>() {
             @Override
-            public void success(FindApiEnvelope weatherDataEnvelope, Response response) {
-                //parse to business object
-                BusProvider.getInstance().post(produceSearchByCityNameEvent(OpenWeatherDataParse.parseCurrentWeathers(weatherDataEnvelope)));
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(CoreApplication.getContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+            public List<CurrentWeather> call(FindApiEnvelope findApiEnvelope) {
+                return OpenWeatherDataParse.parseCurrentWeathers(findApiEnvelope);
             }
         });
     }
-
-//    public void getForcastByCityId(int cityId){
-//        RetrofitHelper.getServerApi().getForcastByCity(cityId, new Callback<DailyWeatherEnvelop>() {
-//            @Override
-//            public void success(DailyWeatherEnvelop dailyWeatherEnvelop, Response response) {
-//                BusProvider.getInstance().post(produceGetForcastByCityIdEvent(OpenWeatherDataParse.parseDailyWeather(dailyWeatherEnvelop)));
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                Toast.makeText(CoreApplication.getContext(),error.getLocalizedMessage(),Toast.LENGTH_SHORT);
-//            }
-//        });
-//    }
 
     //do it sync
     public WeatherForecast getForcastByCityInSync(int cityId){
@@ -93,16 +61,6 @@ public final class OpenWeatherClient {
 
         }
         return weatherForecast;
-    }
-
-    @Produce
-    public MapSearchEvent produceMapSearchEvent(List<CurrentWeather> currentWeathers) {
-        return new MapSearchEvent(currentWeathers);
-    }
-
-    @Produce
-    public SearchByCityNameEvent produceSearchByCityNameEvent(List<CurrentWeather> currentWeathers) {
-        return new SearchByCityNameEvent(currentWeathers);
     }
 
     protected class DailyWeatherEnvelop extends WeatherDataEnvelope {

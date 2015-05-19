@@ -153,8 +153,6 @@
     <string name="search_hint">Search by City</string>
     <string name="search">Search</string>
 
-    <string name="content_authority">com.example.android.sunshine.app</string>
-
     <!--network error-->
     <string name="error_network_http_error">Network http error</string>
     <string name="error_network">Network  error</string>

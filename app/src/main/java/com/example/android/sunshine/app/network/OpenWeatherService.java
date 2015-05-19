@@ -8,6 +8,7 @@ import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
+import rx.Observable;
 
 /**
  * Created by tlnacl on 15/01/15.
@@ -35,10 +36,7 @@ public interface OpenWeatherService {
     void currentWeatherByCity(@Query("id") int cityId, Callback<JsonObject> callback);
 
     @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    OpenWeatherClient.FindApiEnvelope weatherMapSearch(@QueryMap Map<String, String> options);
-
-    @GET("/find")//http://api.openweathermap.org/data/2.5/find?units=metric&lon=174.76877510547638&lat=-36.84631152204655&mode=json&cnt=10
-    void weatherMapSearch(@QueryMap Map<String, String> options, Callback<OpenWeatherClient.FindApiEnvelope> callback);
+    Observable<OpenWeatherClient.FindApiEnvelope> weatherMapSearch(@QueryMap Map<String, String> options);
 
     //search by city name
     //http://api.openweathermap.org/data/2.5/find?q=London*&type=like&mode=json&cnt=10

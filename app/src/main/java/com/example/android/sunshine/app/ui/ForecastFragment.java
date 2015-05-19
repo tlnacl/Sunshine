@@ -15,15 +15,7 @@
  */
 package com.example.android.sunshine.app.ui;
 
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +28,8 @@ import com.example.android.sunshine.app.models.WeatherDetail;
 import com.example.android.sunshine.app.models.WeatherForecast;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
-import com.example.android.sunshine.app.utils.BusProvider;
-import com.squareup.otto.Subscribe;
 
 import java.util.List;
-
-import timber.log.Timber;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.

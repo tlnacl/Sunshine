@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -19,12 +18,14 @@ import android.widget.TextView;
 import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.SuggestionProvider;
-import com.example.android.sunshine.app.events.SearchByCityNameEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
-import com.squareup.otto.Subscribe;
 
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.example.android.sunshine.app.data.SuggestionProvider.AUTHORITY;
 
@@ -37,7 +38,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private ListView mSearchListView;
     private SearchResultAdapter mAdapter;
-    private OpenWeatherClient mClient;
     private String mquery;
     private boolean mLoading;
     private boolean mQueryChanged;
@@ -46,8 +46,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        mClient = new OpenWeatherClient();
         mSearchListView = (ListView) findViewById(R.id.search_list);
 
         mLoading = false;
@@ -62,24 +60,41 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     private void handleQuery(String query) {
         if (!TextUtils.isEmpty(query) && query.length() > 2) {
             mLoading = true;
-            mClient.doCityWeatherSearch(query);
+            mCompositeSubscription.add(OpenWeatherClient.doCityWeatherSearch(query)
+                    .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<CurrentWeather>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<CurrentWeather> weathers) {
+                    onSearchByCityNameReturn(weathers);
+                }
+            }));
         } else {
             //clean list view
         }
     }
 
-    @Subscribe
-    public void onSearchByCityNameReturn(SearchByCityNameEvent event){
+    private void onSearchByCityNameReturn(List<CurrentWeather> weathers){
         mLoading = false;
         if(mQueryChanged){
             handleQuery(mquery);
             mQueryChanged = false;
         }
         if(mAdapter == null){
-            mAdapter = new SearchResultAdapter(this,event.result);
+            mAdapter = new SearchResultAdapter(this,weathers);
             mSearchListView.setAdapter(mAdapter);
         } else {
-            mAdapter.setData(event.result);
+            mAdapter.setData(weathers);
             mAdapter.notifyDataSetChanged();
         }
     }
