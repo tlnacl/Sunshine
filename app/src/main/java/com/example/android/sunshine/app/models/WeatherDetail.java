@@ -1,17 +1,19 @@
 package com.example.android.sunshine.app.models;
 
+import java.io.Serializable;
+
 /**
  * Created by tomtang on 6/05/15.
  */
-public class WeatherDetail extends WeatherBrief {
+public class WeatherDetail extends WeatherBrief implements Serializable{
     private float humidity;
     private float pressure;
     private float windSpeed;
     private float windDirection;
     private String description;
-    private long timestamp;
+    private String dataString;
 
-    public WeatherDetail(float temp, float high, float low, int weatherId, float humidity, float pressure, float windSpeed, float windDirection, String description, long timestamp) {
+    public WeatherDetail(float temp, float high, float low, int weatherId, float humidity, float pressure, float windSpeed, float windDirection, String description, String dataString) {
         this.humidity = humidity;
         this.pressure = pressure;
         this.windSpeed = windSpeed;
@@ -21,7 +23,7 @@ public class WeatherDetail extends WeatherBrief {
         this.high = high;
         this.low = low;
         this.weatherId = weatherId;
-        this.timestamp = timestamp;
+        this.dataString = dataString;
     }
 
 
@@ -45,7 +47,7 @@ public class WeatherDetail extends WeatherBrief {
         return description;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public String getDataString() {
+        return dataString;
     }
 }

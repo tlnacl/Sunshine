@@ -83,11 +83,6 @@
         </activity>
 
         <provider
-            android:name=".data.WeatherProvider"
-            android:authorities="${applicationId}.database_provider"
-            android:exported="false"
-            android:syncable="true" />
-        <provider
             android:name=".data.SuggestionProvider"
             android:authorities="${applicationId}.search_history_provider"
             android:syncable="false" />

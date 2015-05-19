@@ -21,7 +21,7 @@ import com.example.android.sunshine.app.R;
 
 public class DetailActivity extends BaseActivity {
 
-    public static final String DATE_KEY = "forecast_date";
+    public static final String DATA_KEY = "weather_detail";
     public static final String CITY_ID = "city_id";
 
     @Override
@@ -32,10 +32,10 @@ public class DetailActivity extends BaseActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            String date = getIntent().getStringExtra(DATE_KEY);
+            String date = getIntent().getStringExtra(DATA_KEY);
 
             Bundle arguments = new Bundle();
-            arguments.putString(DetailActivity.DATE_KEY, date);
+            arguments.putSerializable(DetailActivity.DATA_KEY, getIntent().getSerializableExtra(DATA_KEY));
 
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(arguments);

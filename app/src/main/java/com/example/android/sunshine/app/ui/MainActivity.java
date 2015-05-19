@@ -21,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
+import com.example.android.sunshine.app.models.WeatherDetail;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 
@@ -78,13 +79,13 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
     }
 
     @Override
-    public void onItemSelected(String date) {
+    public void onItemSelected(WeatherDetail date) {
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
             // adding or replacing the detail fragment using a
             // fragment transaction.
             Bundle args = new Bundle();
-            args.putString(DetailActivity.DATE_KEY, date);
+            args.putSerializable(DetailActivity.DATA_KEY, date);
 
             DetailFragment fragment = new DetailFragment();
             fragment.setArguments(args);
@@ -94,7 +95,7 @@ public class MainActivity extends BaseActivity implements ForecastFragment.Callb
                     .commit();
         } else {
             Intent intent = new Intent(this, DetailActivity.class)
-                    .putExtra(DetailActivity.DATE_KEY, date);
+                    .putExtra(DetailActivity.DATA_KEY, date);
             startActivity(intent);
         }
     }

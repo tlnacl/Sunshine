@@ -25,7 +25,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 import com.example.android.sunshine.app.R;
-import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
@@ -85,8 +84,8 @@ public class SettingsActivity extends PreferenceActivity
             if (preference.getKey().equals(getString(R.string.pref_location_key))) {
                 SunshineSyncAdapter.syncImmediately(this);
             } else {
-                // notify code that weather may be impacted
-                getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
+                // TODO notify code that weather may be impacted
+//                getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);
             }
         }
 

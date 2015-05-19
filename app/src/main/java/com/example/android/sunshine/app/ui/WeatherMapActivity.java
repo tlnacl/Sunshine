@@ -3,7 +3,6 @@ package com.example.android.sunshine.app.ui;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -14,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
+import com.example.android.sunshine.app.data.sharedpreference.SharedPreferenceHelper;
 import com.example.android.sunshine.app.events.MapSearchEvent;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
@@ -295,7 +295,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
 
         mViewHolder.iconView.setContentDescription(description);
 
-        boolean isMetric = Utility.isMetric(this);
+        boolean isMetric = SharedPreferenceHelper.isMetric(this);
 
         double high = weatherUI.getHigh();
         mViewHolder.highTempView.setText(Utility.formatTemperature(this, high));

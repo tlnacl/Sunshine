@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import com.example.android.sunshine.app.BuildConfig;
 import com.example.android.sunshine.app.CoreApplication;
+import com.example.android.sunshine.app.utils.helper.GsonHelper;
 import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,7 +51,7 @@ public final class RetrofitHelper {
             if(BuildConfig.DEBUG) {
                 client.networkInterceptors().add(new StethoInterceptor());
             }
-            Gson gson = new GsonBuilder().setDateFormat("ddMMyyyy HH:mm:ss").create();
+            Gson gson = GsonHelper.getGson();
 
             //excutor
             Executor httpExecutor = Executors.newCachedThreadPool();

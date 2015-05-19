@@ -16,11 +16,9 @@
 package com.example.android.sunshine.app.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.example.android.sunshine.app.R;
-import com.example.android.sunshine.app.data.WeatherContract;
+import com.example.android.sunshine.app.data.sharedpreference.SharedPreferenceHelper;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,24 +27,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class Utility {
-    public static String getPreferredLocation(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.pref_location_key),
-                context.getString(R.string.pref_location_default));
-    }
-
-    public static boolean isMetric(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(context.getString(R.string.pref_units_key),
-                context.getString(R.string.pref_units_metric))
-                .equals(context.getString(R.string.pref_units_metric));
-    }
 
     public static String formatTemperature(Context context, double temperature) {
         // Data stored in Celsius by default.  If user prefers to see in Fahrenheit, convert
         // the values here.
         String suffix = "\u00B0";
-        if (!isMetric(context)) {
+        if (!SharedPreferenceHelper.isMetric(context)) {
             temperature = (temperature * 1.8) + 32;
         }
 
@@ -55,7 +41,7 @@ public class Utility {
     }
 
     static String formatDate(String dateString) {
-        Date date = WeatherContract.getDateFromDb(dateString);
+        Date date = getDateFromDb(dateString);
         return DateFormat.getDateInstance().format(date);
     }
 
@@ -80,8 +66,8 @@ public class Utility {
         // For all days after that: "Mon Jun 8"
 
         Date todayDate = new Date();
-        String todayStr = WeatherContract.getDbDateString(todayDate);
-        Date inputDate = WeatherContract.getDateFromDb(dateStr);
+        String todayStr = getDbDateString(todayDate);
+        Date inputDate = getDateFromDb(dateStr);
 
         // If the date we're building the String for is today's date, the format
         // is "Today, June 24"
@@ -96,7 +82,7 @@ public class Utility {
             Calendar cal = Calendar.getInstance();
             cal.setTime(todayDate);
             cal.add(Calendar.DATE, 7);
-            String weekFutureString = WeatherContract.getDbDateString(cal.getTime());
+            String weekFutureString = getDbDateString(cal.getTime());
 
             if (dateStr.compareTo(weekFutureString) < 0) {
                 // If the input date is less than a week in the future, just return the day name.
@@ -125,7 +111,7 @@ public class Utility {
             Date todayDate = new Date();
             // If the date is today, return the localized version of "Today" instead of the actual
             // day name.
-            if (WeatherContract.getDbDateString(todayDate).equals(dateStr)) {
+            if (getDbDateString(todayDate).equals(dateStr)) {
                 return context.getString(R.string.today);
             } else {
                 // If the date is set for tomorrow, the format is "Tomorrow".
@@ -133,7 +119,7 @@ public class Utility {
                 cal.setTime(todayDate);
                 cal.add(Calendar.DATE, 1);
                 Date tomorrowDate = cal.getTime();
-                if (WeatherContract.getDbDateString(tomorrowDate).equals(
+                if (getDbDateString(tomorrowDate).equals(
                         dateStr)) {
                     return context.getString(R.string.tomorrow);
                 } else {
@@ -171,7 +157,7 @@ public class Utility {
 
     public static String getFormattedWind(Context context, float windSpeed, float degrees) {
         int windFormat;
-        if (Utility.isMetric(context)) {
+        if (SharedPreferenceHelper.isMetric(context)) {
             windFormat = R.string.format_wind_kmh;
         } else {
             windFormat = R.string.format_wind_mph;
@@ -271,5 +257,22 @@ public class Utility {
         }
         //default value for unknow weather
         return R.drawable.art_clear;
+    }
+
+    public static String getDbDateString(Date date){
+        // Because the API returns a unix timestamp (measured in seconds),
+        // it must be converted to milliseconds in order to be converted to valid date.
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        return sdf.format(date);
+    }
+
+    public static Date getDateFromDb(String dateText) {
+        SimpleDateFormat dbDateFormat = new SimpleDateFormat(DATE_FORMAT);
+        try {
+            return dbDateFormat.parse(dateText);
+        } catch ( ParseException e ) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
