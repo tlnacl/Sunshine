@@ -3,9 +3,18 @@ package com.example.android.sunshine.app.ui;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -14,12 +23,14 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.sunshine.app.Constant;
 import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.SuggestionProvider;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
+import com.example.android.sunshine.app.utils.Utility;
 
 import java.util.List;
 
@@ -184,7 +195,22 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         }
 
         public void bind(final int cityId, String city, String country, float temp){
-            mSearchResult.setText(city + "," + country);
+            final String tempString = Utility.formatTemperature(SearchActivity.this, temp);
+            SpannableString text = new SpannableString(city + "," + country + "," + tempString);
+
+            text.setSpan(new ForegroundColorSpan(Color.BLUE),0,city.length(),Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            text.setSpan(new RelativeSizeSpan(1.5f),city.length(),text.length(),Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+
+//            ClickableSpan clickfor = new ClickableSpan() {
+//
+//                @Override
+//                public void onClick(View widget) {
+//                    Toast.makeText(SearchActivity.this, "hello clicked for", Toast.LENGTH_LONG).show();
+//                }
+//            };
+//            text.setSpan(clickfor,city.length()+country.length()+2,text.length(),Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            mSearchResult.setText(text);
+
             mSearchResult.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -193,8 +219,8 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                             AUTHORITY, SuggestionProvider.MODE);
                     suggestions.saveRecentQuery(mquery, null);
 
-                    Intent i = new Intent(SearchActivity.this,MainActivity.class);
-                    i.putExtra(Constant.CITY_ID,cityId);
+                    Intent i = new Intent(SearchActivity.this, MainActivity.class);
+                    i.putExtra(Constant.CITY_ID, cityId);
                     startActivity(i);
 
                 }

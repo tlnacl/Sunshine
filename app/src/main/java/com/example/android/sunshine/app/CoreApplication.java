@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.facebook.stetho.Stetho;
+import com.squareup.leakcanary.LeakCanary;
 
 import timber.log.Timber;
 
@@ -13,7 +14,6 @@ import timber.log.Timber;
  */
 public class CoreApplication extends Application {
     private static CoreApplication instance;
-    private static final String TAG = "APP";
 
     public CoreApplication(){
         instance = this;
@@ -35,6 +35,7 @@ public class CoreApplication extends Application {
                             .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
                             .enableWebKitInspector(Stetho.defaultInspectorModulesProvider(this))
                             .build());
+            LeakCanary.install(this);
         }else{
 //            Timber.plant(new CrashReportingTree());
         }

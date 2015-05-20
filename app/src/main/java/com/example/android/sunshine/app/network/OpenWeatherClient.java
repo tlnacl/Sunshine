@@ -72,12 +72,12 @@ public final class OpenWeatherClient {
         return weatherForecast;
     }
 
-    protected class DailyWeatherEnvelop extends WeatherDataEnvelope {
+    public class DailyWeatherEnvelop extends WeatherDataEnvelope {
         public City city;
         @SerializedName("list")
         public ArrayList<ForcastDataEnvelope> weatherDataEnvelopes;
 
-        class City {
+        public class City {
             @SerializedName("id")
             public int cityId;
             @SerializedName("name")
@@ -86,12 +86,12 @@ public final class OpenWeatherClient {
         }
     }
 
-    protected class FindApiEnvelope extends WeatherDataEnvelope {
+    public class FindApiEnvelope extends WeatherDataEnvelope {
         @SerializedName("list")
         public ArrayList<CurrentWeatherDataEnvelope> weatherDataEnvelopes;
     }
 
-    protected class ForcastDataEnvelope {
+    public class ForcastDataEnvelope {
         @SerializedName("dt")
         public long timestamp;
         @SerializedName("weather")
@@ -104,7 +104,7 @@ public final class OpenWeatherClient {
         @SerializedName("deg")
         public float windDirection;
 
-        class Temp {
+        public class Temp {
             @SerializedName("day")
             public float temp;
             @SerializedName("min")
@@ -114,7 +114,7 @@ public final class OpenWeatherClient {
         }
     }
 
-    protected class CurrentWeatherDataEnvelope {
+    public class CurrentWeatherDataEnvelope {
         @SerializedName("id")
         public int cityId;
         @SerializedName("name")
@@ -127,7 +127,7 @@ public final class OpenWeatherClient {
         @SerializedName("weather")
         public ArrayList<Weather> weathers;
 
-        class Main {
+        public class Main {
             public float temp;
             public float temp_min;
             public float temp_max;
@@ -135,7 +135,7 @@ public final class OpenWeatherClient {
             public int humidity;
         }
 
-        class Sys{
+        public class Sys{
             public String country;
         }
     }
@@ -143,9 +143,9 @@ public final class OpenWeatherClient {
     /**
      * Base class for results returned by the weather web service.
      */
-    protected class WeatherDataEnvelope {
+    public class WeatherDataEnvelope {
         @SerializedName("cod")
-        private int httpCode;
+        public int httpCode;
 
         public WeatherDataEnvelope filterResponse(){
             if(httpCode == 200){
@@ -156,12 +156,12 @@ public final class OpenWeatherClient {
         }
     }
 
-    protected class Weather {
+    public class Weather {
         public int weatherId;
         public String description;
     }
 
-    class Coord {
+    public class Coord {
         public float lon;
         public float lat;
     }
