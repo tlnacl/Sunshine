@@ -52,11 +52,20 @@ public final class OpenWeatherClient {
         });
     }
 
+    public static Observable<WeatherForecast> getForcastByCityAsync(int cityId){
+        return RetrofitHelper.getServerApi().getForcastByCity(cityId).map(new Func1<DailyWeatherEnvelop, WeatherForecast>() {
+            @Override
+            public WeatherForecast call(DailyWeatherEnvelop dailyWeatherEnvelop) {
+                return OpenWeatherDataParse.parseDailyWeather(dailyWeatherEnvelop);
+            }
+        });
+    }
+
     //do it sync
     public WeatherForecast getForcastByCityInSync(int cityId){
         WeatherForecast weatherForecast = null;
         try {
-            weatherForecast = OpenWeatherDataParse.parseDailyWeather(RetrofitHelper.getServerApi().getForcastByCity(cityId));
+            weatherForecast = OpenWeatherDataParse.parseDailyWeather(RetrofitHelper.getServerApi().getForcastByCitySync(cityId));
         } catch (RetrofitError e){
 
         }

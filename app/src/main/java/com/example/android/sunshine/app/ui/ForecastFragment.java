@@ -27,9 +27,18 @@ import com.example.android.sunshine.app.data.sharedpreference.SharedPreferenceHe
 import com.example.android.sunshine.app.models.WeatherDetail;
 import com.example.android.sunshine.app.models.WeatherForecast;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
+import com.example.android.sunshine.app.network.RetrofitHelper;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Encapsulates fetching the forecast and displaying it as a {@link ListView} layout.
@@ -45,6 +54,8 @@ public class ForecastFragment extends BaseFragment {
     private boolean mUseTodayLayout;
 
     private static final String SELECTED_KEY = "selected_position";
+
+    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -124,8 +135,26 @@ public class ForecastFragment extends BaseFragment {
             }
         }else {
             //get from network
-            OpenWeatherClient client = new OpenWeatherClient();
-            client.getForcastByCityInSync(Integer.parseInt(mCityId));
+            mCompositeSubscription.add(OpenWeatherClient.getForcastByCityAsync(Integer.parseInt(mCityId))
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.newThread())
+            .subscribe(new Subscriber<WeatherForecast>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(WeatherForecast forecast) {
+                    mForecastAdapter.setWeathers(forecast.getWeather());
+                    mForecastAdapter.notifyDataSetChanged();
+                }
+            }));
         }
         super.onActivityCreated(savedInstanceState);
     }
@@ -187,5 +216,11 @@ public class ForecastFragment extends BaseFragment {
 
     public void setCityId(String cityId) {
         mCityId = cityId;
+    }
+
+    @Override
+    public void onDetach() {
+        mCompositeSubscription.unsubscribe();
+        super.onDetach();
     }
 }

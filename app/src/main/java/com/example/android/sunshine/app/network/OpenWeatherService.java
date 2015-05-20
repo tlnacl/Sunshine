@@ -24,7 +24,10 @@ public interface OpenWeatherService {
 //    final String WEATHER_MAP_SEARCH = WEATHER_BASE_URL+"find";
 
     @GET("/forecast/daily?mode=json&units=metric&cnt=14")
-    OpenWeatherClient.DailyWeatherEnvelop getForcastByCity(@Query("id") int cityId);
+    OpenWeatherClient.DailyWeatherEnvelop getForcastByCitySync(@Query("id") int cityId);
+
+    @GET("/forecast/daily?mode=json&units=metric&cnt=14")
+    Observable<OpenWeatherClient.DailyWeatherEnvelop> getForcastByCity(@Query("id") int cityId);
 
     @GET("/forecast/daily?mode=json&units=metric&cnt=14")
     void getForcastByCity(@Query("id") int cityId, Callback<OpenWeatherClient.DailyWeatherEnvelop> callback);

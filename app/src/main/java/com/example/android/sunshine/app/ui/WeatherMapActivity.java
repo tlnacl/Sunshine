@@ -386,7 +386,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
     }
 
     private void onWeatherSummaryClicked(View view) {
-        Intent intent = new Intent(this, MainActivity.class).putExtra(Constant.CITY_ID, cityId);
+        Intent intent = new Intent(this, MainActivity.class).putExtra(Constant.CITY_ID, String.valueOf(cityId));
         startActivity(intent);
     }
 }
