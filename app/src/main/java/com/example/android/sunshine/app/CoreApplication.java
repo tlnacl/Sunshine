@@ -10,7 +10,7 @@ import com.squareup.leakcanary.LeakCanary;
 import timber.log.Timber;
 
 /**
- * Created by tlnacl on 16/12/14.
+ * Created by tomtang on 21/05/15.
  */
 public class CoreApplication extends Application {
     private static CoreApplication instance;

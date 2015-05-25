@@ -30,6 +30,7 @@ import com.example.android.sunshine.app.R;
 import com.example.android.sunshine.app.data.SuggestionProvider;
 import com.example.android.sunshine.app.models.CurrentWeather;
 import com.example.android.sunshine.app.network.OpenWeatherClient;
+import com.example.android.sunshine.app.ui.widgets.Truss;
 import com.example.android.sunshine.app.utils.Utility;
 
 import java.util.List;
@@ -196,10 +197,17 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
         public void bind(final int cityId, String city, String country, float temp){
             final String tempString = Utility.formatTemperature(SearchActivity.this, temp);
-            SpannableString text = new SpannableString(city + "," + country + "," + tempString);
 
-            text.setSpan(new ForegroundColorSpan(Color.BLUE),0,city.length(),Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            text.setSpan(new RelativeSizeSpan(1.5f),city.length(),text.length(),Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            Truss truss = new Truss();
+            truss.pushSpan(new StyleSpan(Typeface.BOLD));
+            truss.append(city).append(",");
+            truss.popSpan();
+            truss.pushSpan(new ForegroundColorSpan(Color.BLUE));
+            truss.append(country).append(",");
+
+            truss.pushSpan(new RelativeSizeSpan(1.5f));
+            truss.append(tempString);
+            truss.popSpan();
 
 //            ClickableSpan clickfor = new ClickableSpan() {
 //
@@ -209,7 +217,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 //                }
 //            };
 //            text.setSpan(clickfor,city.length()+country.length()+2,text.length(),Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            mSearchResult.setText(text);
+            mSearchResult.setText(truss.build());
 
             mSearchResult.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -103,6 +103,7 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void onPause() {
+        mMap.clear();
         super.onPause();
     }
 
@@ -389,4 +390,5 @@ public class WeatherMapActivity extends BaseActivity implements View.OnClickList
         Intent intent = new Intent(this, MainActivity.class).putExtra(Constant.CITY_ID, String.valueOf(cityId));
         startActivity(intent);
     }
+
 }
