@@ -1,9 +1,11 @@
 package com.example.android.sunshine.app.models;
 
+import java.io.Serializable;
+
 /**
  * Created by tomtang on 6/05/15.
  */
-public class Location {
+public class Location  implements Serializable {
     private int cityId;
     private String cityName;
     private float lat;

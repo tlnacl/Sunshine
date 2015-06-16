@@ -1,9 +1,11 @@
 package com.example.android.sunshine.app.models;
 
+import java.io.Serializable;
+
 /**
  * Created by tomtang on 6/05/15.
  */
-public class WeatherBrief {
+public class WeatherBrief implements Serializable {
     float temp;
     float high;
     float low;

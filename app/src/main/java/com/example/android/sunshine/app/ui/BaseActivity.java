@@ -3,13 +3,20 @@ package com.example.android.sunshine.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.android.sunshine.app.R;
+import com.example.android.sunshine.app.network.NetworkException;
 import com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout;
 
 import rx.subscriptions.CompositeSubscription;
@@ -17,7 +24,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by tlnacl on 30/12/14.
  */
-public abstract class BaseActivity extends ActionBarActivity implements MultiSwipeRefreshLayout.CanChildScrollUpCallback {
+public abstract class BaseActivity extends ActionBarActivity implements MultiSwipeRefreshLayout.CanChildScrollUpCallback, ErrorCallback {
     private ActionBar mActionBar;
     protected final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
@@ -84,6 +91,38 @@ public abstract class BaseActivity extends ActionBarActivity implements MultiSwi
     protected void setProgressBarTopWhenActionBarShown(int progressBarTopWhenActionBarShown) {
         mProgressBarTopWhenActionBarShown = progressBarTopWhenActionBarShown;
         updateSwipeRefreshProgressBarTop();
+    }
+
+    @Override
+    public void onApiError(@NonNull NetworkException exception) {
+        String message = null;
+//        switch (exception.getErrorKind()) {
+//            case UNEXPECTED:
+//            case NETWORK:
+//                message = getString(R.string.network_not_connected);
+//                break;
+//            case HTTP:
+//                message = exception.getMessage();
+//                break;
+//            default:
+//                message = getString(R.string.network_server_side_problem);
+//                break;
+//        }
+        onError(null, message);
+    }
+
+    @Override
+    public void onError(@Nullable String title, @NonNull String message) {
+        View rootView = findViewById(R.id.root_container);
+        if(!TextUtils.isEmpty(title) || rootView == null) {
+            new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+        } else {
+            Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void updateSwipeRefreshProgressBarTop() {
