@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'release'
             keyPassword 'liuming'
-            storeFile file('/Users/tomtang/sush/git/sunshine/sunshine.jks')
+            storeFile file('../sunshine.jks')
             storePassword 'liuming'
         }
     }

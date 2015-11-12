@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout
+    <com.tl.sunshine.ui.widgets.MultiSwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -15,7 +15,7 @@
         android:layout_height="match_parent">
 
     </fragment>
-    </com.example.android.sunshine.app.ui.widgets.MultiSwipeRefreshLayout>
+    </com.tl.sunshine.ui.widgets.MultiSwipeRefreshLayout>
 
     <ImageButton
         android:id="@+id/layer_switch"

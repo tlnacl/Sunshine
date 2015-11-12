@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/map_pin_multiple_sale"/>
     <!-- findout the difference with this
-    com.example.android.sunshine.app.ui.widgets.SquareFrameLayout-->
+    com.tl.sunshine.ui.widgets.SquareFrameLayout-->
     <FrameLayout
         android:id="@+id/bg_container"
         android:layout_width="wrap_content"

@@ -6,7 +6,7 @@
               android:orientation="vertical"
               tools:context=".NavigationDrawerFragment">
 
-    <com.example.android.sunshine.app.ui.widgets.AspectRatioImageView
+    <com.tl.sunshine.ui.widgets.AspectRatioImageView
         android:id="@+id/drawer_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

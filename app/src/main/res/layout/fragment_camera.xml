@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.android.sunshine.app.ui.widgets.CameraSurfaceView
+        <com.tl.sunshine.ui.widgets.CameraSurfaceView
             android:id="@+id/camera"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </FrameLayout>
 
-    <com.example.android.sunshine.app.ui.widgets.ArGlSurfaceView
+    <com.tl.sunshine.ui.widgets.ArGlSurfaceView
         android:id="@+id/ar_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
