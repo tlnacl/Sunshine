@@ -34,6 +34,7 @@ public final class OpenWeatherClient {
         options.put("cnt", "10");
         options.put("lat", String.format("%.4f", latLng.latitude));
         options.put("lon", String.format("%.4f", latLng.longitude));
+        options.put("APPID","4a296830ce66f74149cb8840cd37100f");
 
         RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<FindApiEnvelope>() {
             @Override
@@ -56,6 +57,8 @@ public final class OpenWeatherClient {
         options.put("cnt", "10");
         options.put("type", "like");
         options.put("q",cityName+"*");
+        //TODO refactor it to one place
+        options.put("APPID","4a296830ce66f74149cb8840cd37100f");
 
         RetrofitHelper.getServerApi().weatherMapSearch(options, new Callback<FindApiEnvelope>() {
             @Override
